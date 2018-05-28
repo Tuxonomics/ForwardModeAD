@@ -1,8 +1,3 @@
-#ifndef FWSCALAR_h
-#define FWSCALAR_h
-
-#include "utilities.h"
-
 
 typedef struct FVar FVar;
 struct FVar {
@@ -230,5 +225,3 @@ FVar FVAtanh(FVar x) /* hyperbolic arctangent of AD number */
     };
 }
 
-
-#endif /* FWSCALAR_h */

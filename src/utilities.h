@@ -1,6 +1,3 @@
-#ifndef UTILITIES_H
-#define UTILITIES_H
-
 
 #include <stdio.h>
 #include <stdint.h>
@@ -264,5 +261,3 @@ void *FreeAll(Allocator al) {
 void *Realloc(Allocator al, void *ptr, size_t size, size_t oldsize) {
     return al.func(al.payload, AT_Realloc, size, oldsize, ptr);
 }
-
-#endif /* UTILITIES_H */

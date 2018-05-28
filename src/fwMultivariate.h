@@ -1,8 +1,3 @@
-#ifndef FWMULTIVARIATE_H
-#define FWMULTIVARIATE_H
-
-#include "utilities.h"
-
 
 typedef struct FVar FVar;
 struct FVar {
@@ -15,7 +10,7 @@ FVar FVInit(u32 dim)  /* init AD number */
 {
     FVar fv;
     fv.dim = dim;
-    fv.dot = (f64 *) Calloc(DefaultAllocator, dim, sizeof(f64));
+    fv.dot = Calloc(DefaultAllocator, dim, sizeof(f64));
     return fv;
 }
 
@@ -355,4 +350,3 @@ FVar FVAtanh(FVar x) /* hyperbolic arctangent of AD number */
     return fv;
 }
 
-#endif /* FWMULTIVARIATE_H */
