@@ -268,6 +268,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = c99;
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/src/BLAS/cblas.a/**",
 					"$(PROJECT_DIR)/src/BLAS",
@@ -283,6 +284,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				GCC_C_LANGUAGE_STANDARD = c99;
 				LIBRARY_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/src/BLAS/cblas.a/**",
 					"$(PROJECT_DIR)/src/BLAS",
