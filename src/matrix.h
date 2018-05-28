@@ -35,7 +35,7 @@ void MatFree(Allocator al, Mat *m)
     Free(al, m->data);
 }
 
-void MatPrint(Mat m, const char* name = NULL)
+void MatPrint(Mat m, const char* name)
 {
     printf("Mat (%s): {\n", name);
     printf("\t.order = %s\n\n", (m.order == ROWMAJ) ? "RowMajor" : "ColMajor");
@@ -46,13 +46,15 @@ void MatPrint(Mat m, const char* name = NULL)
     for (u32 i=0; i<m.dim0; ++i) {
         for (u32 j=0; j<m.dim1; ++j) {
             dim = i*m.dim1 + j;
-            printf("\t%.4f", dim, m.data[dim]);
+            printf("\t%.4f", m.data[dim]);
         }
         printf("\n");
     }
     printf("\n\t}\n\n");
     printf("}\n");
 }
+
+#define MATPRINT(x) MatPrint(x, #x)
 
 Mat MatZeroMake(Allocator al, u32 dim0, u32 dim1)
 {

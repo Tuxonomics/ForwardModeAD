@@ -34,7 +34,7 @@ void FVFree(FVar x) {
     Free(DefaultAllocator, x.dot);
 }
 
-void FVPrint(FVar x, const char* name = NULL) /* print AD number */
+void FVPrint(FVar x, const char* name) /* print AD number */
 {
     printf("FVar (%s): {\n", name);
     printf("\t.val = %.4f\n", x.val);
@@ -46,6 +46,8 @@ void FVPrint(FVar x, const char* name = NULL) /* print AD number */
     printf("\t}\n");
     printf("}\n");
 }
+
+#define FVPRINT(x) FVPrint(x, #x)
 
 f64 FVReal(FVar x) /* get value part */
 {
@@ -289,7 +291,7 @@ FVar FVLog(FVar x) /* log base e of AD number */
 FVar FVLogAbs(FVar x) /* log base e of absolute value of AD number */
 {
     FVar fv = FVInit(x.dim);
-    fv.val = log(abs(x.val));
+    fv.val = log(fabs(x.val));
     
     f64 tmp = 1 / x.val;
     for (u32 i=0; i<x.dim; ++i) {
@@ -302,7 +304,7 @@ FVar FVLogAbs(FVar x) /* log base e of absolute value of AD number */
 FVar FVSinh(FVar x) /* hyperbolic sine of AD number */
 {
     FVar fv = FVInit(x.dim);
-    fv.val = log(abs(x.val));
+    fv.val = sinh(x.val);
     
     f64 tmp = cosh(x.val);
     for (u32 i=0; i<x.dim; ++i) {
@@ -315,7 +317,7 @@ FVar FVSinh(FVar x) /* hyperbolic sine of AD number */
 FVar FVCosh(FVar x) /* hyperbolic cosine of AD number */
 {
     FVar fv = FVInit(x.dim);
-    fv.val = log(abs(x.val));
+    fv.val = cosh(x.val);
     
     f64 tmp = sinh(x.val);
     for (u32 i=0; i<x.dim; ++i) {

@@ -18,13 +18,15 @@ FVar FVMake(f64 val, f64 dot)  /* make AD number */
     return fv;
 }
 
-void FVPrint(FVar x, const char* name = NULL) /* print AD number */
+void FVPrint(FVar x, const char* name) /* print AD number */
 {
     printf("FVar (%s): {\n", name);
     printf("\t.val = %.4f\n", x.val);
     printf("\t.dot = %.4f\n", x.dot);
     printf("}\n");
 }
+
+#define FVPRINT(x) FVPrint(x, #x)
 
 f64 FVReal(FVar x) /* get value part */
 {

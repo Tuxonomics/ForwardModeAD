@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		DD46670320BC952400EFAEB7 /* cblas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD46670220BC952400EFAEB7 /* cblas.a */; settings = {ATTRIBUTES = (Weak, ); }; };
 		DD46670520BC952800EFAEB7 /* libblas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD46670420BC952800EFAEB7 /* libblas.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		DDD2658920B93D4000272509 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DDD2658820B93D4000272509 /* main.cpp */; };
+		DDD2658920B93D4000272509 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = DDD2658820B93D4000272509 /* main.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -29,7 +29,7 @@
 		DD46670220BC952400EFAEB7 /* cblas.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = cblas.a; path = src/BLAS/cblas.a; sourceTree = "<group>"; };
 		DD46670420BC952800EFAEB7 /* libblas.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libblas.a; path = src/BLAS/libblas.a; sourceTree = "<group>"; };
 		DDD2658520B93D4000272509 /* ForwardModeAD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ForwardModeAD; sourceTree = BUILT_PRODUCTS_DIR; };
-		DDD2658820B93D4000272509 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		DDD2658820B93D4000272509 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		DDD2658F20B93DA100272509 /* fwUnivariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fwUnivariate.h; sourceTree = "<group>"; };
 		DDD2659020B9846B00272509 /* utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		DDD2659120B9CF3800272509 /* fwMultivariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fwMultivariate.h; sourceTree = "<group>"; };
@@ -79,7 +79,7 @@
 		DDD2658720B93D4000272509 /* src */ = {
 			isa = PBXGroup;
 			children = (
-				DDD2658820B93D4000272509 /* main.cpp */,
+				DDD2658820B93D4000272509 /* main.c */,
 				DDD2659020B9846B00272509 /* utilities.h */,
 				DDD2658F20B93DA100272509 /* fwUnivariate.h */,
 				DDD2659120B9CF3800272509 /* fwMultivariate.h */,
@@ -146,7 +146,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DDD2658920B93D4000272509 /* main.cpp in Sources */,
+				DDD2658920B93D4000272509 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
