@@ -11,6 +11,7 @@
 //#include <stdbool.h>
 #include <wchar.h>
 
+
 #if defined(_WIN32) || defined(_WIN64)
     #ifndef SYSTEM_WINDOWS
     #define SYSTEM_WINDOWS 1
@@ -72,6 +73,7 @@
 #define MAX(x, y) ((x) >= (y) ? (x) : (y))
 #define IS_POW2(x) (((x) != 0) && ((x) & ((x)-1)) == 0)
 
+#define CACHE_LINES_SQRT 22 // square root of cache lines on Intel i7-48**
 
 #define CONCAT(x,y) x##y
 
