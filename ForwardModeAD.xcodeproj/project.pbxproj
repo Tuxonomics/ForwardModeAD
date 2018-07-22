@@ -34,9 +34,9 @@
 		DD87792B20BDF69A00EC8932 /* liblapack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblapack.a; path = src/BLAS/liblapack.a; sourceTree = "<group>"; };
 		DDD2658520B93D4000272509 /* ForwardModeAD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ForwardModeAD; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD2658820B93D4000272509 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		DDD2658F20B93DA100272509 /* fwUnivariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fwUnivariate.h; sourceTree = "<group>"; };
+		DDD2658F20B93DA100272509 /* fw_univariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_univariate.h; sourceTree = "<group>"; };
 		DDD2659020B9846B00272509 /* utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
-		DDD2659120B9CF3800272509 /* fwMultivariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fwMultivariate.h; sourceTree = "<group>"; };
+		DDD2659120B9CF3800272509 /* fw_multivariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_multivariate.h; sourceTree = "<group>"; };
 		DDD2659220BA097C00272509 /* optim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optim.h; sourceTree = "<group>"; };
 		DDD2659320BABF0300272509 /* numerical.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = numerical.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -89,8 +89,8 @@
 			children = (
 				DDD2658820B93D4000272509 /* main.c */,
 				DDD2659020B9846B00272509 /* utilities.h */,
-				DDD2658F20B93DA100272509 /* fwUnivariate.h */,
-				DDD2659120B9CF3800272509 /* fwMultivariate.h */,
+				DDD2658F20B93DA100272509 /* fw_univariate.h */,
+				DDD2659120B9CF3800272509 /* fw_multivariate.h */,
 				DD46670020BC865B00EFAEB7 /* matrix.h */,
 				DDD2659220BA097C00272509 /* optim.h */,
 				DDD2659320BABF0300272509 /* numerical.h */,

@@ -72,7 +72,7 @@ Mat MatZeroMake(Allocator al, u32 dim0, u32 dim1)
 }
 
 Inline
-void SetElement(Mat m, u32 dim0, u32 dim1, f64 val)
+void MatSetElement(Mat m, u32 dim0, u32 dim1, f64 val)
 {
     ASSERT( m.data );
     ASSERT( dim0 <= m.dim0 );
@@ -82,7 +82,7 @@ void SetElement(Mat m, u32 dim0, u32 dim1, f64 val)
 }
 
 Inline
-f64 GetElement(Mat m, u32 dim0, u32 dim1)
+f64 MatGetElement(Mat m, u32 dim0, u32 dim1)
 {
     ASSERT( dim0 <= m.dim0 );
     ASSERT( dim1 <= m.dim1 );
@@ -90,15 +90,28 @@ f64 GetElement(Mat m, u32 dim0, u32 dim1)
     return m.data[dim];
 }
 
+
+// TODO(jonas): make addition and subtraction cache aware
 Inline
 void MatAdd(Mat a, Mat b, Mat c) /* c = a + b */
 {
     ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1);
     
-    for ( u32 i=0; i<(a.dim0*a.dim1); ++i) {
+    for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) {
         c.data[i] = a.data[i] + b.data[i];
     }
 }
+
+Inline
+void MatSub(Mat a, Mat b, Mat c) /* c = a - b */
+{
+    ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1);
+    
+    for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) {
+        c.data[i] = a.data[i] - b.data[i];
+    }
+}
+
 
 // NOTE(jonas): naive implementation, change when necessary
 Inline
@@ -106,16 +119,15 @@ void MatMul(Mat a, Mat b, Mat c)
 {
     ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
     
-//    u32 aDim = 0, bDim = 0, cDim = 0;
     f64 val;
     
     for ( u32 i = 0; i < c.dim0; ++i ) {
         for ( u32 j = 0; j < c.dim1; ++j ) {
             val = 0;
             for ( u32 k = 0; k < a.dim1; ++k ) {
-                val += GetElement( a, i, k ) * GetElement( b, k, j );
+                val += MatGetElement( a, i, k ) * MatGetElement( b, k, j );
             }
-            SetElement( c, i, j, val );
+            MatSetElement( c, i, j, val );
         }
     }
 }
