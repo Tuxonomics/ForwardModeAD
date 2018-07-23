@@ -1,136 +1,258 @@
 
-#include "BLAS/cblas_f77.h"
-#include "BLAS/cblas.h"
+#ifndef MAT_DECL
 
-#define ORDER  enum CBLAS_ORDER
-#define ROWMAJ CblasRowMajor
-#define COLMAJ CblasColMajor
+#define MAT_DECL(type) typedef struct type##Mat type##Mat; \
+    struct type##Mat { \
+            u32 dim0; \
+            u32 dim1; \
+            type *data; \
+        };
 
-#define DEFAULT_MAJ ROWMAJ
-
-
-// NOTE(jonas): all row major for now
-
-typedef struct Mat Mat;
-struct Mat {
-//    ORDER order;
-    
-    u32 dim0;
-    u32 dim1;
-    
-    f64 *data;
-};
-
-
-// row-major
-// u32 idx = i * nCols + j;
-// now mat[idx] corresponds to m(i, j)
-
-
-Mat MatMake(Allocator al, u32 dim0, u32 dim1)
-{
-    Mat m;
-//    m.order = DEFAULT_MAJ;
-    m.dim0  = dim0;
-    m.dim1  = dim1;
-    m.data  = (f64 *) Alloc(al, dim0 * dim1 * sizeof(f64));
-    return m;
-}
-
-void MatFree(Allocator al, Mat *m)
-{
-    ASSERT(m->data);
-    Free(al, m->data);
-}
-
-void MatPrint(Mat m, const char* name)
-{
-    printf("Mat (%s): {\n", name);
-//    printf("\t.order = %s\n\n", (m.order == ROWMAJ) ? "RowMajor" : "ColMajor");
-    printf("\t.dim0 = %u\n", m.dim0);
-    printf("\t.dim1 = %u\n", m.dim1);
-    printf("\t.data = {\n");
-    u32 dim;
-    for (u32 i=0; i<m.dim0; ++i) {
-        for (u32 j=0; j<m.dim1; ++j) {
-            dim = i*m.dim1 + j;
-            printf("\t%.4f", m.data[dim]);
+#define MAT_MAKE(type) type##Mat \
+    type##MatMake(Allocator al, u32 dim0, u32 dim1) \
+        { \
+            type##Mat m; \
+            m.dim0  = dim0; \
+            m.dim1  = dim1; \
+            m.data  = (type *) Alloc(al, dim0 * dim1 * sizeof(type)); \
+            return m; \
         }
-        printf("\n");
-    }
-    printf("\n\t}\n\n");
-    printf("}\n");
-}
 
-#define MATPRINT(x) MatPrint(x, #x)
+#define MAT_FREE(type) void \
+    type##MatFree(Allocator al, type##Mat *m) \
+        { \
+            ASSERT(m->data); \
+            Free(al, m->data); \
+        }
 
-Mat MatZeroMake(Allocator al, u32 dim0, u32 dim1)
-{
-    Mat m = MatMake(al, dim0, dim1);
-    memset(m.data, 0, dim0 * dim1 * sizeof(f64));
-    return m;
-}
+#define MAT_PRINT(type) void \
+    type##MatPrint(type##Mat m, const char* name) \
+        { \
+            printf("Mat (%s): {\n", name); \
+            printf("\t.dim0 = %u\n", m.dim0); \
+            printf("\t.dim1 = %u\n", m.dim1); \
+            printf("\t.data = {\n"); \
+            u32 dim; \
+            for (u32 i=0; i<m.dim0; ++i) { \
+                for (u32 j=0; j<m.dim1; ++j) { \
+                    dim = i*m.dim1 + j; \
+                    printf("[%d]\n", dim); \
+                    print_##type(m.data[dim]); \
+                    printf("\n"); \
+                } \
+                printf("\n"); \
+            } \
+            printf("\n\t}\n\n"); \
+            printf("}\n"); \
+        }
 
-Inline
-void MatSetElement(Mat m, u32 dim0, u32 dim1, f64 val)
-{
-    ASSERT( m.data );
-    ASSERT( dim0 <= m.dim0 );
-    ASSERT( dim1 <= m.dim1 );
-    u32 dim = dim0*m.dim1 + dim1;
-    m.data[dim] = val;
-}
+#define MATPRINT(type, x) type##MatPrint(x, #x)
 
-Inline
-f64 MatGetElement(Mat m, u32 dim0, u32 dim1)
-{
-    ASSERT( dim0 <= m.dim0 );
-    ASSERT( dim1 <= m.dim1 );
-    u32 dim = dim0 * m.dim1 + dim1;
-    return m.data[dim];
-}
+#define MAT_ZERO(type) type##Mat \
+    type##MatZeroMake(Allocator al, u32 dim0, u32 dim1) \
+        { \
+            type##Mat m = type##MatMake(al, dim0, dim1); \
+            memset(m.data, 0, dim0 * dim1 * sizeof(type)); \
+            return m; \
+        } \
 
+#define MAT_SETELEMENT(type) Inline void \
+    type##MatSetElement(type##Mat m, u32 dim0, u32 dim1, type val) \
+        { \
+            ASSERT( m.data ); \
+            ASSERT( dim0 <= m.dim0 ); \
+            ASSERT( dim1 <= m.dim1 ); \
+            u32 dim = dim0*m.dim1 + dim1; \
+            m.data[dim] = val; \
+        }
 
-// TODO(jonas): make addition and subtraction cache aware
-Inline
-void MatAdd(Mat a, Mat b, Mat c) /* c = a + b */
-{
-    ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1);
-    
-    for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) {
-        c.data[i] = a.data[i] + b.data[i];
-    }
-}
+#define MAT_GETELEMENT(type) Inline type \
+    type##MatGetElement(type##Mat m, u32 dim0, u32 dim1) \
+        { \
+            ASSERT( dim0 <= m.dim0 ); \
+            ASSERT( dim1 <= m.dim1 ); \
+            u32 dim = dim0 * m.dim1 + dim1; \
+            return m.data[dim]; \
+        }
 
-Inline
-void MatSub(Mat a, Mat b, Mat c) /* c = a - b */
-{
-    ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1);
-    
-    for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) {
-        c.data[i] = a.data[i] - b.data[i];
-    }
-}
+#define MAT_ADD(type, fun) Inline void \
+    type##MatAdd(type##Mat a, type##Mat b, type##Mat c) /* c = a + b */ \
+        { \
+            ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1); \
+            \
+            for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) { \
+                c.data[i] = fun( a.data[i], b.data[i] ); \
+            } \
+        }
+
+#define MAT_SUB(type, fun) Inline void \
+    type##MatSub(type##Mat a, type##Mat b, type##Mat c) /* c = a - b */ \
+        { \
+            ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1); \
+            \
+            for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) { \
+                c.data[i] = fun( a.data[i], b.data[i] ); \
+            } \
+        }
 
 
 // NOTE(jonas): naive implementation, change when necessary
-Inline
-void MatMul(Mat a, Mat b, Mat c)
-{
-    ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
-    
-    f64 val;
-    
-    for ( u32 i = 0; i < c.dim0; ++i ) {
-        for ( u32 j = 0; j < c.dim1; ++j ) {
-            val = 0;
-            for ( u32 k = 0; k < a.dim1; ++k ) {
-                val += MatGetElement( a, i, k ) * MatGetElement( b, k, j );
-            }
-            MatSetElement( c, i, j, val );
+#define MAT_MUL(type, addFun, mulFun) Inline void \
+    type##MatMul(type##Mat a, type##Mat b, type##Mat c) \
+        { \
+            ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1); \
+            \
+            /* type val; */ \
+            \
+            for ( u32 i = 0; i < c.dim0; ++i ) { \
+                for ( u32 j = 0; j < c.dim1; ++j ) { \
+                    type val = {0}; \
+                    for ( u32 k = 0; k < a.dim1; ++k ) { \
+                        val = addFun( \
+                            val, \
+                            mulFun( type##MatGetElement( a, i, k ), type##MatGetElement( b, k, j ) ) \
+                        ); \
+                    } \
+                    type##MatSetElement( c, i, j, val ); \
+                } \
+            } \
         }
-    }
-}
+
+#endif
+
+
+//#include "BLAS/cblas_f77.h"
+//#include "BLAS/cblas.h"
+//
+//#define ORDER  enum CBLAS_ORDER
+//#define ROWMAJ CblasRowMajor
+//#define COLMAJ CblasColMajor
+//
+//#define DEFAULT_MAJ ROWMAJ
+//
+//
+//// NOTE(jonas): all row major for now
+//
+//typedef struct Mat Mat;
+//struct Mat {
+////    ORDER order;
+//
+//    u32 dim0;
+//    u32 dim1;
+//
+//    f64 *data;
+//};
+//
+//
+//// row-major
+//// u32 idx = i * nCols + j;
+//// now mat[idx] corresponds to m(i, j)
+//
+//
+//Mat MatMake(Allocator al, u32 dim0, u32 dim1)
+//{
+//    Mat m;
+////    m.order = DEFAULT_MAJ;
+//    m.dim0  = dim0;
+//    m.dim1  = dim1;
+//    m.data  = (f64 *) Alloc(al, dim0 * dim1 * sizeof(f64));
+//    return m;
+//}
+//
+//void MatFree(Allocator al, Mat *m)
+//{
+//    ASSERT(m->data);
+//    Free(al, m->data);
+//}
+//
+//void MatPrint(Mat m, const char* name)
+//{
+//    printf("Mat (%s): {\n", name);
+////    printf("\t.order = %s\n\n", (m.order == ROWMAJ) ? "RowMajor" : "ColMajor");
+//    printf("\t.dim0 = %u\n", m.dim0);
+//    printf("\t.dim1 = %u\n", m.dim1);
+//    printf("\t.data = {\n");
+//    u32 dim;
+//    for (u32 i=0; i<m.dim0; ++i) {
+//        for (u32 j=0; j<m.dim1; ++j) {
+//            dim = i*m.dim1 + j;
+//            printf("\t%.4f", m.data[dim]);
+//        }
+//        printf("\n");
+//    }
+//    printf("\n\t}\n\n");
+//    printf("}\n");
+//}
+//
+//#define MATPRINT(x) MatPrint(x, #x)
+//
+//Mat MatZeroMake(Allocator al, u32 dim0, u32 dim1)
+//{
+//    Mat m = MatMake(al, dim0, dim1);
+//    memset(m.data, 0, dim0 * dim1 * sizeof(f64));
+//    return m;
+//}
+//
+//Inline
+//void MatSetElement(Mat m, u32 dim0, u32 dim1, f64 val)
+//{
+//    ASSERT( m.data );
+//    ASSERT( dim0 <= m.dim0 );
+//    ASSERT( dim1 <= m.dim1 );
+//    u32 dim = dim0*m.dim1 + dim1;
+//    m.data[dim] = val;
+//}
+//
+//Inline
+//f64 MatGetElement(Mat m, u32 dim0, u32 dim1)
+//{
+//    ASSERT( dim0 <= m.dim0 );
+//    ASSERT( dim1 <= m.dim1 );
+//    u32 dim = dim0 * m.dim1 + dim1;
+//    return m.data[dim];
+//}
+//
+//
+//// TODO(jonas): make addition and subtraction cache aware
+//Inline
+//void MatAdd(Mat a, Mat b, Mat c) /* c = a + b */
+//{
+//    ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1);
+//
+//    for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) {
+//        c.data[i] = a.data[i] + b.data[i];
+//    }
+//}
+//
+//Inline
+//void MatSub(Mat a, Mat b, Mat c) /* c = a - b */
+//{
+//    ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1);
+//
+//    for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) {
+//        c.data[i] = a.data[i] - b.data[i];
+//    }
+//}
+//
+//
+//// NOTE(jonas): naive implementation, change when necessary
+//Inline
+//void MatMul(Mat a, Mat b, Mat c)
+//{
+//    ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
+//
+//    f64 val;
+//
+//    for ( u32 i = 0; i < c.dim0; ++i ) {
+//        for ( u32 j = 0; j < c.dim1; ++j ) {
+//            val = 0;
+//            for ( u32 k = 0; k < a.dim1; ++k ) {
+//                val += MatGetElement( a, i, k ) * MatGetElement( b, k, j );
+//            }
+//            MatSetElement( c, i, j, val );
+//        }
+//    }
+//}
 
 
 //#define CACHE_LINE_SIZE 64
@@ -168,15 +290,15 @@ void MatMul(Mat a, Mat b, Mat c)
 //}
 
 
-void MatMul_BLAS(Mat a, Mat b, Mat c)
-{
-    ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
-    
-    cblas_dgemm(
-        DEFAULT_MAJ, CblasNoTrans, CblasNoTrans,
-        a.dim0, b.dim1, a.dim1, 1.0,
-        a.data, a.dim1, b.data, b.dim1,
-        0.0, c.data, b.dim1);
-}
+//void MatMul_BLAS(Mat a, Mat b, Mat c)
+//{
+//    ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
+//
+//    cblas_dgemm(
+//        DEFAULT_MAJ, CblasNoTrans, CblasNoTrans,
+//        a.dim0, b.dim1, a.dim1, 1.0,
+//        a.data, a.dim1, b.data, b.dim1,
+//        0.0, c.data, b.dim1);
+//}
 
 

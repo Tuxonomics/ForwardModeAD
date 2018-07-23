@@ -263,3 +263,10 @@ void *FreeAll(Allocator al) {
 void *Realloc(Allocator al, void *ptr, size_t size, size_t oldsize) {
     return al.func(al.payload, AT_Realloc, size, oldsize, ptr);
 }
+
+
+
+#include "matrix.h"
+
+
+

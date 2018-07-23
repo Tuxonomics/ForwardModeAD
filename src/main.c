@@ -35,7 +35,7 @@ FVar target( FVar *input )
 }
 
 
-FVar target2( Mat_FVar input )
+FVar target2( FVarMat input )
 {
     return logNormalPDF( input.data[0], input.data[1] );
 }
@@ -61,22 +61,22 @@ int main(int argc, const char * argv[]) {
     l = target( params );
     FVPrint(l, "l - 2");
 
-    Mat_FVar mat = MatMake_FVar( DefaultAllocator, 2, 1 );
+    FVarMat mat = FVarMatMake( DefaultAllocator, 2, 1 );
     
-    MatSetElement_FVar( mat, 0, 0, mu );
-    MatSetElement_FVar( mat, 1, 0, sigma );
+    FVarMatSetElement( mat, 0, 0, mu );
+    FVarMatSetElement( mat, 1, 0, sigma );
     
-    MatPrint_FVar( mat, NULL );
+    FVarMatPrint( mat, NULL );
     
     l = target2( mat );
     FVPrint( l, "l - 3" );
     
     
-    Mat_FVar grad = MatMake_FVar( DefaultAllocator, 2, 1 );
+    FVarMat grad = FVarMatMake( DefaultAllocator, 2, 1 );
     
     FVarGradient( &target2, mat, grad );
     
-    MatPrint_FVar( grad, NULL );
+    FVarMatPrint( grad, NULL );
     
     
 ////    u32 num = 2;

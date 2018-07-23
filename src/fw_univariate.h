@@ -227,130 +227,6 @@ FVar FVAtanh(FVar x) /* hyperbolic arctangent of AD number */
 }
 
 
-#ifndef MAT_DECL
-
-#define MAT_DECL(type) typedef struct Mat_##type Mat_##type; \
-    struct Mat_##type { \
-        u32 dim0; \
-        u32 dim1; \
-        type *data; \
-    };
-
-#define MAT_MAKE(type) Mat_##type \
-    MatMake_##type(Allocator al, u32 dim0, u32 dim1) \
-        { \
-            Mat_##type m; \
-            m.dim0  = dim0; \
-            m.dim1  = dim1; \
-            m.data  = (type *) Alloc(al, dim0 * dim1 * sizeof(type)); \
-            return m; \
-        }
-
-#define MAT_FREE(type) void \
-    MatFree_##type(Allocator al, Mat_##type *m) \
-        { \
-            ASSERT(m->data); \
-            Free(al, m->data); \
-        }
-
-#define MAT_PRINT(type) void \
-    MatPrint_##type(Mat_##type m, const char* name) \
-        { \
-            printf("Mat (%s): {\n", name); \
-            printf("\t.dim0 = %u\n", m.dim0); \
-            printf("\t.dim1 = %u\n", m.dim1); \
-            printf("\t.data = {\n"); \
-            u32 dim; \
-            for (u32 i=0; i<m.dim0; ++i) { \
-                for (u32 j=0; j<m.dim1; ++j) { \
-                    dim = i*m.dim1 + j; \
-                    printf("[%d]\n", dim); \
-                    print_##type(m.data[dim]); \
-                    printf("\n"); \
-                } \
-                printf("\n"); \
-            } \
-            printf("\n\t}\n\n"); \
-            printf("}\n"); \
-        }
-
-#define MATPRINT(type, x) MatPrint_##type(x, #x)
-
-#define MAT_ZERO(type) Mat_##type \
-    MatZeroMake_##type(Allocator al, u32 dim0, u32 dim1) \
-        { \
-            Mat_##type m = MatMake_##type(al, dim0, dim1); \
-            memset(m.data, 0, dim0 * dim1 * sizeof(type)); \
-            return m; \
-        } \
-
-#define MAT_SETELEMENT(type) Inline void \
-    MatSetElement_##type(Mat_##type m, u32 dim0, u32 dim1, type val) \
-        { \
-            ASSERT( m.data ); \
-            ASSERT( dim0 <= m.dim0 ); \
-            ASSERT( dim1 <= m.dim1 ); \
-            u32 dim = dim0*m.dim1 + dim1; \
-            m.data[dim] = val; \
-        }
-
-#define MAT_GETELEMENT(type) Inline type \
-    MatGetElement_##type(Mat_##type m, u32 dim0, u32 dim1) \
-        { \
-            ASSERT( dim0 <= m.dim0 ); \
-            ASSERT( dim1 <= m.dim1 ); \
-            u32 dim = dim0 * m.dim1 + dim1; \
-            return m.data[dim]; \
-        }
-
-#define MAT_ADD(type, fun) Inline void \
-    MatAdd_##type(Mat_##type a, Mat_##type b, Mat_##type c) /* c = a + b */ \
-    { \
-        ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1); \
-     \
-        for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) { \
-            c.data[i] = fun( a.data[i], b.data[i] ); \
-        } \
-    }
-
-#define MAT_SUB(type, fun) Inline void \
-    MatSub_##type(Mat_##type a, Mat_##type b, Mat_##type c) /* c = a - b */ \
-        { \
-            ASSERT(a.dim0 == b.dim0 && a.dim1 == b.dim1 && a.dim0 == c.dim0 && a.dim1 == c.dim1); \
-         \
-            for ( u32 i=0; i<(a.dim0*a.dim1); ++i ) { \
-                c.data[i] = fun( a.data[i], b.data[i] ); \
-            } \
-        }
-
-
-// NOTE(jonas): naive implementation, change when necessary
-#define MAT_MUL(type, addFun, mulFun) Inline void \
-MatMul_##type(Mat_##type a, Mat_##type b, Mat_##type c) \
-{ \
-    ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1); \
- \
-    /* type val; */ \
- \
-    for ( u32 i = 0; i < c.dim0; ++i ) { \
-        for ( u32 j = 0; j < c.dim1; ++j ) { \
-            type val = {0}; \
-            for ( u32 k = 0; k < a.dim1; ++k ) { \
-                val = addFun( \
-                    val, \
-                    mulFun( MatGetElement_##type( a, i, k ), MatGetElement_##type( b, k, j ) \
-                    ) \
-                ); \
-            } \
-            MatSetElement_##type( c, i, j, val ); \
-        } \
-    } \
-}
-
-#endif
-
-
-
 MAT_DECL(FVar);
 MAT_MAKE(FVar);
 MAT_FREE(FVar);
@@ -364,15 +240,14 @@ MAT_MUL(FVar, FVAdd, FVMul);
 
 
 
-
-void FVarGradient( FVar f( Mat_FVar ), Mat_FVar input, Mat_FVar grad )
+void FVarGradient( FVar f( FVarMat ), FVarMat input, FVarMat grad )
 {
     ASSERT( input.dim0 == grad.dim0 && input.dim1 == grad.dim1 && input.dim1 == 1 );
     
     FVar tmp;
     u32 N = input.dim0;
     
-    Mat_FVar xCpy = MatMake_FVar( DefaultAllocator, N, 1 );
+    FVarMat xCpy = FVarMatMake( DefaultAllocator, N, 1 );
     
     for ( u32 i=0; i<N; ++i ) {
         xCpy.data[i]     = input.data[i];
