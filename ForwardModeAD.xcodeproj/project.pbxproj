@@ -32,6 +32,7 @@
 		DD46670420BC952800EFAEB7 /* libblas.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libblas.a; path = src/BLAS/libblas.a; sourceTree = "<group>"; };
 		DD46670620BDF3CD00EFAEB7 /* liblapacke.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblapacke.a; path = src/BLAS/liblapacke.a; sourceTree = "<group>"; };
 		DD87792B20BDF69A00EC8932 /* liblapack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblapack.a; path = src/BLAS/liblapack.a; sourceTree = "<group>"; };
+		DDB509632107CF4100CCDC1F /* random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
 		DDD2658520B93D4000272509 /* ForwardModeAD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ForwardModeAD; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD2658820B93D4000272509 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		DDD2658F20B93DA100272509 /* fw_univariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_univariate.h; sourceTree = "<group>"; };
@@ -92,6 +93,7 @@
 				DDD2658F20B93DA100272509 /* fw_univariate.h */,
 				DDD2659120B9CF3800272509 /* fw_multivariate.h */,
 				DD46670020BC865B00EFAEB7 /* matrix.h */,
+				DDB509632107CF4100CCDC1F /* random.h */,
 				DDD2659220BA097C00272509 /* optim.h */,
 				DDD2659320BABF0300272509 /* numerical.h */,
 			);

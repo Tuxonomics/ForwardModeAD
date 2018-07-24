@@ -230,14 +230,14 @@ MAT_MUL(FVar, FVAdd, FVMul);
 
 
 
-void FVarGradient( FVar f( FVarMat ), FVarMat input, FVarMat grad )
+void FVarGradient( Allocator al, FVar f( Allocator, FVarMat ), FVarMat input, FVarMat grad )
 {
     ASSERT( input.dim0 == grad.dim0 && input.dim1 == grad.dim1 && input.dim1 == 1 );
     
     FVar tmp;
     u32 N = input.dim0;
     
-    FVarMat xCpy = FVarMatMake( DefaultAllocator, N, 1 );
+    FVarMat xCpy = FVarMatMake( al, N, 1 );
     
     for ( u32 i=0; i<N; ++i ) {
         xCpy.data[i]     = input.data[i];
@@ -247,7 +247,7 @@ void FVarGradient( FVar f( FVarMat ), FVarMat input, FVarMat grad )
     for ( u32 i=0; i<N; ++i ) {
         xCpy.data[i].dot = 1.0;
         
-        tmp     = f( xCpy );
+        tmp     = f( al, xCpy );
         tmp.val = tmp.dot;
         tmp.dot = 0;
         
