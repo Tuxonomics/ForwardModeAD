@@ -24,16 +24,6 @@ void FVPrint(FVar x, const char* name) /* print AD number */
 #define FVPRINT(x) FVPrint(x, #x)
 #define print_FVar(x) FVPrint(x, NULL)
 
-f64 FVReal(FVar x) /* get value part */
-{
-    return x.val;
-}
-
-f64 FVDot(FVar x) /* get derivative part */
-{
-    return x.dot;
-}
-
 FVar FVAdd(FVar x, FVar y)  /* add two AD numbers */
 {
     return (FVar) {

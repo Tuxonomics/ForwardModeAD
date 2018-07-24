@@ -44,11 +44,6 @@ void FVPrint(FVar x, const char* name) /* print AD number */
 
 #define FVPRINT(x) FVPrint(x, #x)
 
-f64 FVReal(FVar x) /* get value part */
-{
-    return x.val;
-}
-
 FVar FVAdd(FVar x, FVar y)  /* add two AD numbers */
 {
     u32 dim = x.dim;
