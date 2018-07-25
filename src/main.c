@@ -78,6 +78,20 @@ int main(int argc, const char * argv[]) {
     
     FVarMatPrint( grad, NULL );
     
+
+    Xorshift1024 x = Xorshift1024Init( 37473 );
+    
+    printf( "new number: %llu\n", rngXorshift1024Next( &x ) );
+    printf("new number: %.8f\n", rngXorshift1024NextFloat( &x ) );
+
+    
+    Xorshift1024 xx = Xorshift1024Init( 37473 );
+    Rng rng = RngInitXorshift1024( &xx );
+
+    printf( "new number: %llu\n", RngNext( rng ) );
+    printf("new number: %.8f\n", RngNextFloat( rng ) );
+
+
     
 ////    u32 num = 2;
 ////
