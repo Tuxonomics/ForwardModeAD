@@ -144,6 +144,15 @@ typedef i32      b32;
     #endif
 #endif
 
+#if !defined(_Threadlocal)
+    #if defined(_MSC_VER)
+        #define _Threadlocal __declspec( thread )
+    #else
+        #define _Threadlocal __thread
+    #endif
+#endif
+
+
 void Backtrace() {
 #define BACKTRACE_MAX_STACK_DEPTH 50
 #if SYSTEM_POSIX
@@ -264,6 +273,22 @@ void *Realloc(Allocator al, void *ptr, size_t size, size_t oldsize) {
     return al.func(al.payload, AT_Realloc, size, oldsize, ptr);
 }
 
+
+void PrintBits(u64 const size, void const * const ptr) {
+    u8 *b = (u8*) ptr;
+    u8 byte;
+    i64 i, j;
+
+    for (i=size-1;i>=0;i--)
+    {
+        for (j=7;j>=0;j--)
+        {
+            byte = (b[i] >> j) & 1;
+            printf("%u", byte);
+        }
+    }
+    puts("");
+}
 
 
 #include "matrix.h"

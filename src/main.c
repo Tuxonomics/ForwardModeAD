@@ -1,6 +1,9 @@
 
 #define CONSTANT 1
 
+
+#include <time.h>
+
 #include "utilities.h"
 #include "fw_univariate.h"
 //#include "fw_multivariate.h"
@@ -85,13 +88,18 @@ int main(int argc, const char * argv[]) {
     printf("new number: %.8f\n", rngXorshift1024NextFloat( &x ) );
 
     
-    Xorshift1024 xx = Xorshift1024Init( 37473 );
+    Xorshift1024 xx = Xorshift1024Init( (u64) time(NULL) );
     Rng rng = RngInitXorshift1024( &xx );
 
     printf( "new number: %llu\n", RngNext( rng ) );
     printf("new number: %.8f\n", RngNextFloat( rng ) );
 
-
+    printf("c(\n");
+    for ( u32 i=0; i<1000; ++i )
+        printf( "%.8f,\n", RngNormal( rng ) );
+    
+    printf( "%.8f\n", RngNormal( rng ) );
+    printf(")\n");
     
 ////    u32 num = 2;
 ////
