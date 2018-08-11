@@ -72,6 +72,9 @@ Xorshift1024 Xorshift1024Init( u64 seed )
     return state;
 }
 
+#define XORSHIFT_INIT Xorshift1024Init( (u64) time(NULL) )
+
+
 NEXT_FUNC(rngXorshift1024Next) {
 
     Xorshift1024 *x = (Xorshift1024 *) state;
@@ -138,6 +141,21 @@ Rng RngInitXorshift1024( Xorshift1024 *state )
 }
 
 
+#if TEST
+void test_xorshift1024()
+{
+    Xorshift1024 x = Xorshift1024Init( 37473 );
+    
+    TEST_ASSERT( rngXorshift1024Next( &x ) > 0 );
+    TEST_ASSERT( rngXorshift1024NextFloat( &x ) < 1.0 );
+    
+    rngXorshift1024Jump( &x);
+    
+    TEST_ASSERT( rngXorshift1024Next( &x ) > 0 );
+    TEST_ASSERT( rngXorshift1024NextFloat( &x ) < 1.0 );
+}
+#endif
+
 // NOTE(jonas): macros to allow inlining
 
 #define RNG_TYPE Xorshift1024
@@ -169,9 +187,4 @@ f64 RngNormal( Rng r ){
 
 /* Exact sampling from normal distribution: https://arxiv.org/abs/1303.6257 .
  The algorithm is exact when the underlying uniform RNG is perfect. */
-
-
-
-
-
 

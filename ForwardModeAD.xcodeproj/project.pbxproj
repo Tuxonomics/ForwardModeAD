@@ -7,10 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DD46670320BC952400EFAEB7 /* cblas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD46670220BC952400EFAEB7 /* cblas.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		DD46670520BC952800EFAEB7 /* libblas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD46670420BC952800EFAEB7 /* libblas.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		DD46670720BDF3CD00EFAEB7 /* liblapacke.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD46670620BDF3CD00EFAEB7 /* liblapacke.a */; settings = {ATTRIBUTES = (Weak, ); }; };
-		DD87792C20BDF69A00EC8932 /* liblapack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DD87792B20BDF69A00EC8932 /* liblapack.a */; };
 		DDD2658920B93D4000272509 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = DDD2658820B93D4000272509 /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -28,16 +24,11 @@
 
 /* Begin PBXFileReference section */
 		DD46670020BC865B00EFAEB7 /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
-		DD46670220BC952400EFAEB7 /* cblas.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = cblas.a; path = src/BLAS/cblas.a; sourceTree = "<group>"; };
-		DD46670420BC952800EFAEB7 /* libblas.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libblas.a; path = src/BLAS/libblas.a; sourceTree = "<group>"; };
-		DD46670620BDF3CD00EFAEB7 /* liblapacke.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblapacke.a; path = src/BLAS/liblapacke.a; sourceTree = "<group>"; };
-		DD87792B20BDF69A00EC8932 /* liblapack.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = liblapack.a; path = src/BLAS/liblapack.a; sourceTree = "<group>"; };
-		DDB509632107CF4100CCDC1F /* random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
+		DDB509632107CF4100CCDC1F /* rng.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rng.h; sourceTree = "<group>"; };
 		DDD2658520B93D4000272509 /* ForwardModeAD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ForwardModeAD; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD2658820B93D4000272509 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		DDD2658F20B93DA100272509 /* fw_univariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_univariate.h; sourceTree = "<group>"; };
 		DDD2659020B9846B00272509 /* utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
-		DDD2659120B9CF3800272509 /* fw_multivariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_multivariate.h; sourceTree = "<group>"; };
 		DDD2659220BA097C00272509 /* optim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optim.h; sourceTree = "<group>"; };
 		DDD2659320BABF0300272509 /* numerical.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = numerical.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -47,33 +38,17 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD46670320BC952400EFAEB7 /* cblas.a in Frameworks */,
-				DD46670520BC952800EFAEB7 /* libblas.a in Frameworks */,
-				DD87792C20BDF69A00EC8932 /* liblapack.a in Frameworks */,
-				DD46670720BDF3CD00EFAEB7 /* liblapacke.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		DD46670120BC952400EFAEB7 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				DD87792B20BDF69A00EC8932 /* liblapack.a */,
-				DD46670620BDF3CD00EFAEB7 /* liblapacke.a */,
-				DD46670420BC952800EFAEB7 /* libblas.a */,
-				DD46670220BC952400EFAEB7 /* cblas.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		DDD2657C20B93D4000272509 = {
 			isa = PBXGroup;
 			children = (
 				DDD2658720B93D4000272509 /* src */,
 				DDD2658620B93D4000272509 /* Products */,
-				DD46670120BC952400EFAEB7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -91,9 +66,8 @@
 				DDD2658820B93D4000272509 /* main.c */,
 				DDD2659020B9846B00272509 /* utilities.h */,
 				DDD2658F20B93DA100272509 /* fw_univariate.h */,
-				DDD2659120B9CF3800272509 /* fw_multivariate.h */,
 				DD46670020BC865B00EFAEB7 /* matrix.h */,
-				DDB509632107CF4100CCDC1F /* random.h */,
+				DDB509632107CF4100CCDC1F /* rng.h */,
 				DDD2659220BA097C00272509 /* optim.h */,
 				DDD2659320BABF0300272509 /* numerical.h */,
 			);
@@ -295,9 +269,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/src/BLAS";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/BLAS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -309,9 +281,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/src/BLAS";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/src/BLAS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};

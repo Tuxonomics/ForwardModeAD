@@ -2,14 +2,10 @@
 #define CONSTANT 1
 
 
-#include <time.h>
-
 #include "utilities.h"
 #include "fw_univariate.h"
 //#include "fw_multivariate.h"
-//#include "matrix.h"
-//#include "optim.h"
-//#include "numerical.h"
+#include "optim.h"
 
 
 // TODO(jonas): make arena for multivariate
@@ -32,22 +28,44 @@ FVar logNormalPDF(FVar mu, FVar sigma)
 }
 
 
+Inline
 FVar target( FVar *input )
 {
     return logNormalPDF(input[0], input[1]);
 }
 
 
-FVar target2( Allocator al, FVarMat input )
+Inline
+FVar target2( FVarMat input )
 {
     return logNormalPDF( input.data[0], input.data[1] );
 }
 
 
 
+FVar bimodal( FVar x, FVar y )
+{
+    FVar out;
+    
+    f64 mu = 2.5;
+    f64 s  = 1;
+    
+    out = FVExp( FVDMul( -0.5*s, FVAdd( FVPow( FVDAdd( mu, y), 2), FVPow( FVDAdd( -mu, x), 2) ) ) );
+    
+    out = FVAdd( out, FVExp( FVDMul( -0.5*s, FVAdd( FVPow( FVDAdd( -mu, y), 2), FVPow( FVDAdd( mu, x), 2) ) ) ) );
+    
+    return FVLog( out );
+}
+
+Inline
+FVar bmTarget( FVarMat input )
+{
+    return bimodal( input.data[0], input.data[1] );
+}
 
 
 
+#ifndef TEST
 int main(int argc, const char * argv[]) {
 
     FVar mu    = FVMake(5.0, 0);
@@ -71,7 +89,7 @@ int main(int argc, const char * argv[]) {
     
     FVarMatPrint( mat, NULL );
     
-    l = target2( DefaultAllocator, mat );
+    l = target2( mat );
     FVPrint( l, "l - 3" );
     
     
@@ -82,24 +100,24 @@ int main(int argc, const char * argv[]) {
     FVarMatPrint( grad, NULL );
     
 
-    Xorshift1024 x = Xorshift1024Init( 37473 );
-    
-    printf( "new number: %llu\n", rngXorshift1024Next( &x ) );
-    printf("new number: %.8f\n", rngXorshift1024NextFloat( &x ) );
-
-    
-    Xorshift1024 xx = Xorshift1024Init( (u64) time(NULL) );
-    Rng rng = RngInitXorshift1024( &xx );
-
-    printf( "new number: %llu\n", RngNext( rng ) );
-    printf("new number: %.8f\n", RngNextFloat( rng ) );
-
-    printf("c(\n");
-    for ( u32 i=0; i<1000; ++i )
-        printf( "%.8f,\n", RngNormal( rng ) );
-    
-    printf( "%.8f\n", RngNormal( rng ) );
-    printf(")\n");
+//    Xorshift1024 x = Xorshift1024Init( 37473 );
+//
+//    printf( "new number: %llu\n", rngXorshift1024Next( &x ) );
+//    printf("new number: %.8f\n", rngXorshift1024NextFloat( &x ) );
+//
+//
+//    Xorshift1024 xx = XORSHIFT_INIT;
+//    Rng rng = RngInitXorshift1024( &xx );
+//
+//    printf( "new number: %llu\n", RngNext( rng ) );
+//    printf("new number: %.8f\n", RngNextFloat( rng ) );
+//
+//    printf("c(\n");
+//    for ( u32 i=0; i<1000; ++i )
+//        printf( "%.8f,\n", RngNormal( rng ) );
+//
+//    printf( "%.8f\n", RngNormal( rng ) );
+//    printf(")\n");
     
 ////    u32 num = 2;
 ////
@@ -168,3 +186,4 @@ int main(int argc, const char * argv[]) {
 
     return 0;
 }
+#endif

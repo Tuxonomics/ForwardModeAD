@@ -217,6 +217,7 @@ FVar FVAtanh(FVar x) /* hyperbolic arctangent of AD number */
 }
 
 
+
 MAT_DECL(FVar);
 MAT_MAKE(FVar);
 MAT_FREE(FVar);
@@ -224,13 +225,15 @@ MAT_PRINT(FVar);
 MAT_ZERO(FVar);
 MAT_SETELEMENT(FVar);
 MAT_GETELEMENT(FVar);
+MAT_SETCOL(FVar);
+MAT_GETCOL(FVar);
 MAT_ADD(FVar, FVAdd);
 MAT_SUB(FVar, FVSub);
 MAT_MUL(FVar, FVAdd, FVMul);
 
 
 
-void FVarGradient( Allocator al, FVar f( Allocator, FVarMat ), FVarMat input, FVarMat grad )
+void FVarGradient( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad )
 {
     ASSERT( input.dim0 == grad.dim0 && input.dim1 == grad.dim1 && input.dim1 == 1 );
     
@@ -247,7 +250,7 @@ void FVarGradient( Allocator al, FVar f( Allocator, FVarMat ), FVarMat input, FV
     for ( u32 i=0; i<N; ++i ) {
         xCpy.data[i].dot = 1.0;
         
-        tmp     = f( al, xCpy );
+        tmp     = f( xCpy );
         tmp.val = tmp.dot;
         tmp.dot = 0;
         

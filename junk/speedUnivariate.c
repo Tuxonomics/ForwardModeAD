@@ -1,7 +1,7 @@
 
 // Function from https://www.youtube.com/watch?v=r2hhRSHiQwY at 10:10
 
-#include "fwUnivariate.h"
+#include "../src/fwUnivariate.h"
 #include <time.h>
 
 int main(int argn, const char ** argv) {

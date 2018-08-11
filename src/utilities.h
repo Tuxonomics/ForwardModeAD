@@ -10,6 +10,7 @@
 //#include <unistd.h>
 //#include <stdbool.h>
 #include <wchar.h>
+#include <time.h>
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -292,6 +293,5 @@ void PrintBits(u64 const size, void const * const ptr) {
 
 
 #include "matrix.h"
-#include "random.h"
-
+#include "rng.h"
 
