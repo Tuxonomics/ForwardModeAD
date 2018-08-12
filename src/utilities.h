@@ -292,6 +292,13 @@ void PrintBits(u64 const size, void const * const ptr) {
 }
 
 
+Inline
+b32 F64Equal( f64 a, f64 b, f64 eps )
+{
+    return fabs( a - b ) < eps;
+}
+
+
 #include "matrix.h"
 #include "rng.h"
 

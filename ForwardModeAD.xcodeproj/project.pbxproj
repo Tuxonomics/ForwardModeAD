@@ -30,7 +30,7 @@
 		DDD2658F20B93DA100272509 /* fw_univariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_univariate.h; sourceTree = "<group>"; };
 		DDD2659020B9846B00272509 /* utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		DDD2659220BA097C00272509 /* optim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optim.h; sourceTree = "<group>"; };
-		DDD2659320BABF0300272509 /* numerical.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = numerical.h; sourceTree = "<group>"; };
+		DDD2659320BABF0300272509 /* grad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grad.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +69,7 @@
 				DD46670020BC865B00EFAEB7 /* matrix.h */,
 				DDB509632107CF4100CCDC1F /* rng.h */,
 				DDD2659220BA097C00272509 /* optim.h */,
-				DDD2659320BABF0300272509 /* numerical.h */,
+				DDD2659320BABF0300272509 /* grad.h */,
 			);
 			path = src;
 			sourceTree = "<group>";

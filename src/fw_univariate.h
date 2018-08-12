@@ -24,6 +24,11 @@ void FVPrint(FVar x, const char* name) /* print AD number */
 #define FVPRINT(x) FVPrint(x, #x)
 #define print_FVar(x) FVPrint(x, NULL)
 
+b32 FVEqual( FVar x, FVar y, f64 eps ) /* numerical equality of two AD numbers */
+{
+    return F64Equal( x.val, y.val, eps ) && F64Equal( x.dot, y.dot, eps );
+}
+
 FVar FVAdd(FVar x, FVar y)  /* add two AD numbers */
 {
     return (FVar) {
@@ -88,7 +93,7 @@ FVar FVDiv(FVar x, FVar y)  /* divide AD by AD */
     };
 }
 
-FVar FDDivD(FVar x, double a)  /* divide AD by double */
+FVar FVDivD(FVar x, double a)  /* divide AD by double */
 {
     return (FVar) {
         .val = x.val / a,
@@ -103,6 +108,33 @@ FVar FVNeg(FVar x) /* negate AD */
         .dot = -x.dot
     };
 }
+
+
+#if TEST
+void test_fv_basic_functions()
+{
+    FVar a = { .val = 1.1, .dot = 1.0 };
+    FVar b = { .val = 2.0, .dot = 0.0 };
+    FVar c = a;
+    
+    TEST_ASSERT( FVEqual( a, c, 1E-10 ) );
+    TEST_ASSERT( ! FVEqual( a, b, 1E-10 ) );
+    
+    TEST_ASSERT( FVEqual( FVAdd( a, b ), FVAdd( b, a ), 1E-10 ) );
+    
+    TEST_ASSERT( FVEqual( FVAddD( a, 5 ), FVDAdd( 5, a ), 1E-10 ) );
+    
+    TEST_ASSERT( FVEqual( FVSub( a, b ), FVNeg( FVSub( b, a ) ), 1E-10 ) );
+    
+    TEST_ASSERT( FVEqual( FVMul( a, b ), FVMul( b, a ), 1E-10 ) );
+    
+    TEST_ASSERT( FVEqual( FVMulD( a, 5 ), FVDMul( 5, a ), 1E-10 ) );
+    
+    TEST_ASSERT( FVEqual( FVDiv( a, b ), (FVar) { .val = 0.55, .dot = 0.5 }, 1E-10 ) );
+    
+    TEST_ASSERT( FVEqual( FVDivD( a, 2 ), (FVar) { .val = 0.55, .dot = 0.5 }, 1E-10 ) );
+}
+#endif
 
 
 /* elementary forward AD functions */
@@ -217,6 +249,41 @@ FVar FVAtanh(FVar x) /* hyperbolic arctangent of AD number */
 }
 
 
+#if TEST
+void test_fv_elementary_functions()
+{
+    FVar a = { .val = 2.0, .dot = 1.0 };
+    
+    TEST_ASSERT( FVEqual( FVSqrt(a), (FVar) { .val = 1.414, .dot = 0.353 }, 1E-3 ) );
+    
+    TEST_ASSERT( FVEqual( FVPow( a, 2 ), (FVar) { .val = 4.0, .dot = 4.0 }, 1E-10 ) );
+    
+//    FVSin
+    
+//    FVCos
+    
+//    FVTan
+    
+//    FVAtan
+    
+//    FVExp
+    
+//    FVExp
+    
+//    FVLog
+    
+//    FVLogAbs
+    
+//    FVSinh
+    
+//    FVCosh
+    
+//    FVTanh
+    
+//    FVAtanh
+}
+#endif
+
 
 MAT_DECL(FVar);
 MAT_MAKE(FVar);
@@ -230,36 +297,5 @@ MAT_GETCOL(FVar);
 MAT_ADD(FVar, FVAdd);
 MAT_SUB(FVar, FVSub);
 MAT_MUL(FVar, FVAdd, FVMul);
-
-
-
-void FVarGradient( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad )
-{
-    ASSERT( input.dim0 == grad.dim0 && input.dim1 == grad.dim1 && input.dim1 == 1 );
-    
-    FVar tmp;
-    u32 N = input.dim0;
-    
-    FVarMat xCpy = FVarMatMake( al, N, 1 );
-    
-    for ( u32 i=0; i<N; ++i ) {
-        xCpy.data[i]     = input.data[i];
-        xCpy.data[i].dot = 0;
-    }
-    
-    for ( u32 i=0; i<N; ++i ) {
-        xCpy.data[i].dot = 1.0;
-        
-        tmp     = f( xCpy );
-        tmp.val = tmp.dot;
-        tmp.dot = 0;
-        
-        grad.data[i]     = tmp;
-        xCpy.data[i].dot = 0;
-    }
-}
-
-
-
 
 

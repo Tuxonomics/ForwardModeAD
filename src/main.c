@@ -3,9 +3,8 @@
 
 
 #include "utilities.h"
-#include "fw_univariate.h"
-//#include "fw_multivariate.h"
-#include "optim.h"
+#include "grad.h"
+//#include "optim.h"
 
 
 // TODO(jonas): make arena for multivariate
@@ -87,7 +86,7 @@ int main(int argc, const char * argv[]) {
     FVarMatSetElement( mat, 0, 0, mu );
     FVarMatSetElement( mat, 1, 0, sigma );
     
-    FVarMatPrint( mat, NULL );
+    FVarMatPrint( mat, "mat" );
     
     l = target2( mat );
     FVPrint( l, "l - 3" );
@@ -97,9 +96,18 @@ int main(int argc, const char * argv[]) {
     
     FVarGradient( DefaultAllocator, &target2, mat, grad );
     
-    FVarMatPrint( grad, NULL );
+    FVarMatPrint( grad, "grad" );
     
+    
+    FVarFDiff( DefaultAllocator, &target2, mat, grad, 0.000001 );
+    
+    FVarMatPrint( grad, "FDiff" );
 
+    
+    FVarCDiff( DefaultAllocator, &target2, mat, grad, 0.000001 );
+    
+    FVarMatPrint( grad, "CDiff" );
+    
 //    Xorshift1024 x = Xorshift1024Init( 37473 );
 //
 //    printf( "new number: %llu\n", rngXorshift1024Next( &x ) );

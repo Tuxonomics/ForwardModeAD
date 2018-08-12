@@ -156,6 +156,7 @@ void test_xorshift1024()
 }
 #endif
 
+
 // NOTE(jonas): macros to allow inlining
 
 #define RNG_TYPE Xorshift1024
