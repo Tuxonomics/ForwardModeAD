@@ -2,7 +2,7 @@
 
 
 /* Finite Difference */
-void FVarFDiff( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad, f64 h ) {
+void FVFDiff( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad, f64 h ) {
     
     ASSERT( input.dim0 == grad.dim0 && input.dim1 == grad.dim1 && input.dim1 == 1 );
     
@@ -33,7 +33,7 @@ void FVarFDiff( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad, f6
 
 
 /* Central Difference */
-void FVarCDiff( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad, f64 h ) {
+void FVCDiff( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad, f64 h ) {
 
     ASSERT( input.dim0 == grad.dim0 && input.dim1 == grad.dim1 && input.dim1 == 1 );
     
@@ -69,7 +69,7 @@ void FVarCDiff( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad, f6
 
 
 /* AD gradient */
-void FVarGradient( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad )
+void FVGradient( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad )
 {
     ASSERT( input.dim0 == grad.dim0 && input.dim1 == grad.dim1 && input.dim1 == 1 );
     
@@ -96,3 +96,34 @@ void FVarGradient( Allocator al, FVar f( FVarMat ), FVarMat input, FVarMat grad 
     
     FVarMatFree( al, &xCpy );
 }
+
+
+FVar test_f( FVarMat input )
+{
+    return FVTanh( input.data[0] );
+}
+
+#if TEST
+void test_grad()
+{
+#define P 1E-8
+    
+    FVarMat input  = FVarMatMake( DefaultAllocator, 1, 1 );
+    FVarMat gradC  = FVarMatMake( DefaultAllocator, 1, 1 );
+    FVarMat gradF  = FVarMatMake( DefaultAllocator, 1, 1 );
+    FVarMat gradAD = FVarMatMake( DefaultAllocator, 1, 1 );
+    
+    input.data[0] = (FVar) { .val = 0.5, .dot = 1.0 };
+    
+    FVFDiff( DefaultAllocator, test_f, input, gradF, P );
+    
+    FVCDiff( DefaultAllocator, test_f, input, gradC, P );
+    
+    FVGradient( DefaultAllocator, test_f, input, gradAD );
+    
+    TEST_ASSERT( FVarMatEqual( gradF, gradC,  P ) );
+    TEST_ASSERT( FVarMatEqual( gradC, gradAD, P ) );
+    
+#undef P
+}
+#endif
