@@ -108,6 +108,7 @@ int main(int argc, const char * argv[]) {
     
     FVarMatPrint( grad, "CDiff" );
     
+    
 //    Xorshift1024 x = Xorshift1024Init( 37473 );
 //
 //    printf( "new number: %llu\n", rngXorshift1024Next( &x ) );

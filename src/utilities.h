@@ -293,10 +293,19 @@ void PrintBits(u64 const size, void const * const ptr) {
 
 
 Inline
-b32 F64Equal( f64 a, f64 b, f64 eps )
+b32 f64Equal( f64 a, f64 b, f64 eps )
 {
     return fabs( a - b ) < eps;
 }
+
+
+#if TEST
+void test_f64Equal()
+{
+    TEST_ASSERT( f64Equal( 1, 0.51, 0.5 ) );
+    TEST_ASSERT( ! f64Equal( 0.0, 0.01, 1E-2 ) );
+}
+#endif
 
 
 #include "matrix.h"

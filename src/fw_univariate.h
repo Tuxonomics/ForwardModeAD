@@ -26,7 +26,7 @@ void FVPrint(FVar x, const char* name) /* print AD number */
 
 b32 FVEqual( FVar x, FVar y, f64 eps ) /* numerical equality of two AD numbers */
 {
-    return F64Equal( x.val, y.val, eps ) && F64Equal( x.dot, y.dot, eps );
+    return f64Equal( x.val, y.val, eps ) && f64Equal( x.dot, y.dot, eps );
 }
 
 FVar FVAdd(FVar x, FVar y)  /* add two AD numbers */
@@ -93,11 +93,19 @@ FVar FVDiv(FVar x, FVar y)  /* divide AD by AD */
     };
 }
 
-FVar FVDivD(FVar x, double a)  /* divide AD by double */
+FVar FVDivD(FVar x, f64 a)  /* divide AD by f64 */
 {
     return (FVar) {
         .val = x.val / a,
         .dot = x.dot / a
+    };
+}
+
+FVar FVDDiv(f64 a, FVar x)  /* divide f64 by AD */
+{
+    return (FVar) {
+        .val = a / x.val,
+        .dot = a / ( x.val * x.val )
     };
 }
 
@@ -244,43 +252,130 @@ FVar FVAtanh(FVar x) /* hyperbolic arctangent of AD number */
 {
     return (FVar) {
         .val = atanh(x.val),
-        .dot = x.dot / ( 1.0 - (x.val * x.val) )
+        .dot = 1.0 / ( 1.0 - (x.val * x.val) )
     };
 }
+
+
+
 
 
 #if TEST
 void test_fv_elementary_functions()
 {
+#define P 1E-10
+
     FVar a = { .val = 2.0, .dot = 1.0 };
+    FVar b = { .val = 0.5, .dot = 1.0 };
     
-    TEST_ASSERT( FVEqual( FVSqrt(a), (FVar) { .val = 1.414, .dot = 0.353 }, 1E-3 ) );
     
-    TEST_ASSERT( FVEqual( FVPow( a, 2 ), (FVar) { .val = 4.0, .dot = 4.0 }, 1E-10 ) );
+    TEST_ASSERT(
+        FVEqual(
+            FVSqrt(a),
+            (FVar) { .val = sqrt(a.val), .dot = 1 / (2 * sqrt(a.val)) },
+            P
+        )
+    );
+
+    TEST_ASSERT(
+        FVEqual(
+            FVPow( a, 2 ),
+            (FVar) { .val = pow(a.val, 2.0), .dot = 2 * a.val },
+            P
+        )
+    );
+
+    TEST_ASSERT(
+        FVEqual(
+            FVSin( a ),
+            (FVar) { .val = sin(a.val), .dot = cos(a.val) },
+            P
+        )
+    );
     
-//    FVSin
+    TEST_ASSERT(
+        FVEqual(
+            FVCos( a ),
+            (FVar) { .val = cos(a.val), .dot = -sin(a.val) },
+            P
+        )
+    );
     
-//    FVCos
+    TEST_ASSERT(
+        FVEqual(
+            FVTan( a ),
+            FVDiv( FVSin(a), FVCos(a) ),
+            P
+        )
+    );
     
-//    FVTan
+    TEST_ASSERT(
+        FVEqual(
+            FVAtan( a ),
+            (FVar) { .val = atan(a.val), .dot = 1 / ( 1 + (a.val * a.val) ) },
+            P
+        )
+    );
     
-//    FVAtan
+    TEST_ASSERT(
+        FVEqual(
+            FVExp( a ),
+            (FVar) { .val = exp(a.val), .dot = exp(a.val) },
+            P
+        )
+    );
     
-//    FVExp
+    TEST_ASSERT(
+        FVEqual(
+            FVLog( a ),
+            (FVar) { .val = log(a.val), .dot = 1 / a.val },
+            P
+        )
+    );
     
-//    FVExp
+    TEST_ASSERT(
+        FVEqual(
+            FVLogAbs( FVNeg(a) ),
+            (FVar) { .val = log( a.val ), .dot = 1 / a.val },
+            P
+        )
+    );
     
-//    FVLog
+    TEST_ASSERT(
+        FVEqual(
+            FVSinh( a ),
+            (FVar) { .val = sinh( a.val ), .dot = cosh( a.val ) },
+            P
+        )
+    );
     
-//    FVLogAbs
+    TEST_ASSERT(
+        FVEqual(
+            FVCosh( a ),
+            (FVar) { .val = cosh( a.val ), .dot = sinh( a.val ) },
+            P
+        )
+    );
     
-//    FVSinh
+    TEST_ASSERT(
+        FVEqual(
+            FVTanh( a ),
+            (FVar) { .val = tanh( a.val ), .dot = 1 - tanh( a.val ) * tanh( a.val ) },
+            P
+        )
+    );
     
-//    FVCosh
+    TEST_ASSERT(
+        FVEqual(
+            FVAtanh( b ),
+            (FVar) { .val = atanh( b.val ), .dot = 1.0 / ( 1.0 - (b.val * b.val) ) },
+            P
+        )
+    );
     
-//    FVTanh
     
-//    FVAtanh
+    
+#undef P
 }
 #endif
 
@@ -289,6 +384,7 @@ MAT_DECL(FVar);
 MAT_MAKE(FVar);
 MAT_FREE(FVar);
 MAT_PRINT(FVar);
+MAT_EQUAL(FVar, FVEqual);
 MAT_ZERO(FVar);
 MAT_SETELEMENT(FVar);
 MAT_GETELEMENT(FVar);
