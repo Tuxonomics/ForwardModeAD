@@ -293,6 +293,43 @@ void PrintBits(u64 const size, void const * const ptr) {
 
 
 Inline
+f64 f64Add( f64 a, f64 b )
+{
+    return a + b;
+}
+
+Inline
+f64 f64Sub( f64 a, f64 b )
+{
+    return a - b;
+}
+
+Inline
+f64 f64Mul( f64 a, f64 b )
+{
+    return a * b;
+}
+
+Inline
+f64 f64Div( f64 a, f64 b )
+{
+    return a / b;
+}
+
+Inline
+f64 f64Neg( f64 a )
+{
+    return -a;
+}
+
+Inline
+void f64Print( f64 a )
+{
+    printf("%.4f", a);
+}
+
+
+Inline
 b32 f64Equal( f64 a, f64 b, f64 eps )
 {
     return fabs( a - b ) < eps;

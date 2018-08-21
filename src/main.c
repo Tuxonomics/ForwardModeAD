@@ -10,57 +10,57 @@
 // TODO(jonas): make arena for multivariate
 
 
-FVar logNormalPDF(FVar mu, FVar sigma)
-{
-
-    FVar fv = FVDiv( FVMul(mu, mu), FVMul(sigma, sigma) );
-
-#if CONSTANT
-    fv = FVAddD( fv, log( 2 * M_PI ) );
-#endif
-
-    fv = FVMulD( fv, -0.5 );
-
-    fv = FVSub( fv, FVLog( sigma ) );
-
-    return fv;
-}
-
-
-Inline
-FVar target( FVar *input )
-{
-    return logNormalPDF(input[0], input[1]);
-}
-
-
-Inline
-FVar target2( FVarMat input )
-{
-    return logNormalPDF( input.data[0], input.data[1] );
-}
-
-
-
-FVar bimodal( FVar x, FVar y )
-{
-    FVar out;
-    
-    f64 mu = 2.5;
-    f64 s  = 1;
-    
-    out = FVExp( FVDMul( -0.5*s, FVAdd( FVPow( FVDAdd( mu, y), 2), FVPow( FVDAdd( -mu, x), 2) ) ) );
-    
-    out = FVAdd( out, FVExp( FVDMul( -0.5*s, FVAdd( FVPow( FVDAdd( -mu, y), 2), FVPow( FVDAdd( mu, x), 2) ) ) ) );
-    
-    return FVLog( out );
-}
-
-Inline
-FVar bmTarget( FVarMat input )
-{
-    return bimodal( input.data[0], input.data[1] );
-}
+//FVar logNormalPDF(FVar mu, FVar sigma)
+//{
+//
+//    FVar fv = FVDiv( FVMul(mu, mu), FVMul(sigma, sigma) );
+//
+//#if CONSTANT
+//    fv = FVAddD( fv, log( 2 * M_PI ) );
+//#endif
+//
+//    fv = FVMulD( fv, -0.5 );
+//
+//    fv = FVSub( fv, FVLog( sigma ) );
+//
+//    return fv;
+//}
+//
+//
+//Inline
+//FVar target( FVar *input )
+//{
+//    return logNormalPDF(input[0], input[1]);
+//}
+//
+//
+//Inline
+//FVar target2( FVarMat input )
+//{
+//    return logNormalPDF( input.data[0], input.data[1] );
+//}
+//
+//
+//
+//FVar bimodal( FVar x, FVar y )
+//{
+//    FVar out;
+//    
+//    f64 mu = 2.5;
+//    f64 s  = 1;
+//    
+//    out = FVExp( FVDMul( -0.5*s, FVAdd( FVPow( FVDAdd( mu, y), 2), FVPow( FVDAdd( -mu, x), 2) ) ) );
+//    
+//    out = FVAdd( out, FVExp( FVDMul( -0.5*s, FVAdd( FVPow( FVDAdd( -mu, y), 2), FVPow( FVDAdd( mu, x), 2) ) ) ) );
+//    
+//    return FVLog( out );
+//}
+//
+//Inline
+//FVar bmTarget( FVarMat input )
+//{
+//    return bimodal( input.data[0], input.data[1] );
+//}
 
 
 

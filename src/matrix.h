@@ -32,7 +32,7 @@
             Free(al, m->data); \
         }
 
-#define MAT_PRINT(type) void \
+#define MAT_PRINT(type, baseFun) void \
     type##MatPrint(type##Mat m, const char* name) \
         { \
             printf("Mat (%s): {\n", name); \
@@ -44,7 +44,7 @@
                 for (u32 j=0; j<m.dim1; ++j) { \
                     dim = i*m.dim1 + j; \
                     printf("[%d]\n", dim); \
-                    print_##type(m.data[dim]); \
+                    baseFun(m.data[dim]); \
                     printf("\n"); \
                 } \
                 printf("\n"); \
@@ -161,35 +161,10 @@
 #endif
 
 
-Inline
-f64 f64Add( f64 a, f64 b )
-{
-    return a + b;
-}
-
-Inline
-f64 f64Sub( f64 a, f64 b )
-{
-    return a - b;
-}
-
-Inline
-f64 f64Mul( f64 a, f64 b )
-{
-    return a * b;
-}
-
-void print_f64( f64 a )
-{
-    printf("%.4f\n", a);
-}
-
-
-
 MAT_DECL(f64);
 MAT_MAKE(f64);
 MAT_FREE(f64);
-MAT_PRINT(f64);
+MAT_PRINT(f64, f64Print);
 MAT_EQUAL(f64, f64Equal);
 MAT_ZERO(f64);
 MAT_SETELEMENT(f64);
