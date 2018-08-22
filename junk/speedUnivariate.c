@@ -1,7 +1,8 @@
 
 // Function from https://www.youtube.com/watch?v=r2hhRSHiQwY at 10:10
 
-#include "../src/fwUnivariate.h"
+#include "../src/utilities.h"
+#include "../src/fw_univariate.h"
 #include <time.h>
 
 int main(int argn, const char ** argv) {
@@ -9,15 +10,15 @@ int main(int argn, const char ** argv) {
     u32 N = 1410065408;
     
     
-    FVar x = FVMake(0.0, 1.0);
+    f64FVar x = f64FVMake(0.0, 1.0);
     
-    FVar out;
+    f64FVar out;
     f64 dump = 0;
     
     clock_t begin0 = clock();
     
     for (u32 i=0; i<N; ++i) {
-        out = FVDiv( FVExp(x), FVSqrt( FVAdd( FVPow( FVCos(x), 3.0) , FVPow( FVSin(x), 3.0) ) ) );
+        out = f64FVDiv( f64FVExp(x), f64FVSqrt( f64FVAdd( f64FVPow( f64FVCos(x), 3.0), f64FVPow( f64FVSin(x), 3.0) ) ) );
         dump += out.val;
     }
     

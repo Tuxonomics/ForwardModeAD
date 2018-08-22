@@ -323,6 +323,12 @@ f64 f64Neg( f64 a )
 }
 
 Inline
+f64 f64Const( f64 a )
+{
+    return a;
+}
+
+Inline
 void f64Print( f64 a )
 {
     printf("%.4f", a);

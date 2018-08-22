@@ -3,11 +3,6 @@
 
 #ifndef MAT_DECL
 
-#define M(i,j) m.data[i*m.dim1 + j]
-#define A(i,j) a.data[i*a.dim1 + j]
-#define B(i,j) b.data[i*b.dim1 + j]
-#define C(i,j) c.data[i*c.dim1 + j]
-
 #define MAT_DECL(type) typedef struct type##Mat type##Mat; \
     struct type##Mat { \
             u32 dim0; \
@@ -84,7 +79,7 @@
             ASSERT( m.data ); \
             ASSERT( dim0 <= m.dim0 ); \
             ASSERT( dim1 <= m.dim1 ); \
-            M(dim0, dim1) = val; \
+            m.data[dim0 * m.dim1 + dim1] = val; \
         }
 
 #define MAT_GETELEMENT(type) Inline type \
@@ -92,7 +87,7 @@
         { \
             ASSERT( dim0 <= m.dim0 ); \
             ASSERT( dim1 <= m.dim1 ); \
-            return M(dim0, dim1); \
+            return m.data[dim0 * m.dim1 + dim1]; \
         }
 
 #define MAT_SETCOL(type) void \
@@ -150,10 +145,10 @@
                     for ( u32 k = 0; k < a.dim1; ++k ) { \
                         val = addFun( \
                             val, \
-                            mulFun( A(i, k), B(k, j) ) \
+                            mulFun( a.data[i * a.dim1 + k], b.data[k * b.dim1 + j] ) \
                         ); \
                     } \
-                    C(i, j) = val; \
+                    c.data[i * c.dim1 + j] = val; \
                 } \
             } \
         }
