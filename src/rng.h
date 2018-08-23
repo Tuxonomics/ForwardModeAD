@@ -64,7 +64,7 @@ Xorshift1024 Xorshift1024Init( u64 seed )
     Xorshift1024 state;
 
     for ( u32 i=0; i<16; ++i ) {
-        state.s[i] = seed;
+        state.s[i] = seed + i;
     }
 
     state.p = 0;

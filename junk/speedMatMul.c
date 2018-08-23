@@ -2,9 +2,38 @@
 #include "../src/grad.h"
 #include <time.h>
 
-#include <immintrin.h>
+//#include <immintrin.h>
+//#include <emmintrin.h>
+
+#if defined (__has_include) && (__has_include(<x86intrin.h>))
+    #include <x86intrin.h>
+#else
+    #error "No Intel intrinsics file found..."
+#endif
+
+//#include <x86intrin.h>
 
 //#include "build-cblas/blas/CBLAS/include/cblas.h"
+
+
+
+void print256_num(__m256 var)
+{
+    f64 *val = (f64*) &var;
+    printf("%.4f %.4f %.4f %.4f \n",
+           val[0], val[1], val[2], val[3]);
+}
+
+
+void print256_mul(__m256 var1, __m256 var2)
+{
+    f64 *val1 = (f64*) &var1;
+    f64 *val2 = (f64*) &var2;
+    printf("%.4f %.4f %.4f %.4f \n",
+           val1[0]*val2[0], val1[1]*val2[1], val1[2]*val2[2], val1[3]*val2[3]);
+}
+
+
 
 #define CLS 64
 
@@ -158,6 +187,57 @@ void fastMM3( f64Mat a, f64Mat b, f64Mat c )
 }
 
 
+void fastMM4( f64Mat a, f64Mat b, f64Mat c )
+{
+    ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
+    
+    // A is n x m
+    // B is m x p
+    // C is n x p
+    
+    u32 n = a.dim0;
+    u32 m = a.dim1;
+    u32 p = b.dim1;
+    
+    i32 i, j, k;
+    
+    f64 tmpA;
+    
+    f64 *ra  = a.data;
+    f64 *rb  = b.data;
+    f64 *rc  = c.data;
+    f64 *rc2 = c.data;
+    
+    for ( i = 0; i < n; ++i ) {
+        for ( k = 0; k < m; ++k ) {
+            
+//            tmpA = (ra++)[0];
+            
+            __m256 tmpSIMD = _mm256_set1_pd( (ra++)[0] );
+            
+            for ( j = 0; j < p; j += 4, rb += 4, rc += 4 ) {
+                __m256 bSIMD = _mm256_load_pd( rb );
+                __m256 cSIMD = _mm256_load_pd( rc );
+
+                __m256 mul = _mm256_mul_pd( tmpSIMD, bSIMD );
+                
+                __m256 add = _mm256_add_pd( cSIMD, mul );
+                
+                _mm256_store_pd( rc, add );
+            }
+            
+            rc = rc2;
+        }
+        
+        
+        rc = rc + p;
+        rc2 = rc;
+        rb = b.data;
+    }
+}
+
+
+
 void FVFastMM( f64FVarMat a, f64FVarMat b, f64FVarMat c )
 {
     ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
@@ -203,8 +283,8 @@ void FVFastMM( f64FVarMat a, f64FVarMat b, f64FVarMat c )
 }
 
 
-
 int main(int argn, const char ** argv) {
+    
 
 //    u32 S = 4000;
 //
@@ -258,31 +338,34 @@ int main(int argn, const char ** argv) {
 
 
 
-    u32 S = 4000;
+    u32 S = 8;
+    u32 S2 = S;
 
-    f64Mat a = f64MatMake( DefaultAllocator, S, S );
-    f64Mat b = f64MatMake( DefaultAllocator, S, S );
+    f64Mat a = f64MatMake( DefaultAllocator, S, S2 );
+    f64Mat b = f64MatMake( DefaultAllocator, S2, S );
     f64Mat c = f64MatZeroMake( DefaultAllocator, S, S );
     f64Mat d = f64MatZeroMake( DefaultAllocator, S, S );
 
 
     Xorshift1024 x = Xorshift1024Init( 37473 );
 
-    for ( u32 i=0; i<S*S; ++i ) {
+    for ( u32 i=0; i<S*S2; ++i ) {
         a.data[i] = rngXorshift1024NextFloat( &x );
         b.data[i] = rngXorshift1024NextFloat( &x ) * 2;
     }
 
+//    f64MatPrint( a, "a" );
+//    f64MatPrint( b, "b" );
 
 //    f64MatMul( a, b, c );
-
-//    fastMM3( a, b, c );
 //
+////    fastMM3( a, b, c );
+////
 //    f64MatPrint( c, "c" );
-
 //
-//    fastMM( a, b, d );
-//
+////
+//    fastMM4( a, b, d );
+////
 //    f64MatPrint( d, "d" );
 //    memset( d.data, 0, d.dim0 * d.dim1 * sizeof(f64) );
 //
@@ -292,19 +375,19 @@ int main(int argn, const char ** argv) {
     clock_t end0;
     double time_spent0;
 
-//    // one
-//    dump = 0;
-//    begin0 = clock();
-//
-//    fastMM( a, b, c );
-//
-//    dump = c.data[0];
-//
-//    end0 = clock();
-//    time_spent0 = (double)(end0 - begin0) / CLOCKS_PER_SEC;
-//
-//    printf("dump = %.4f\n", dump);
-//    printf("Time of fastMM function call: %.4f sec.\n", time_spent0);
+    // one
+    dump = 0;
+    begin0 = clock();
+
+    fastMM2( a, b, c );
+
+    dump = c.data[0];
+
+    end0 = clock();
+    time_spent0 = (double)(end0 - begin0) / CLOCKS_PER_SEC;
+
+    printf("dump = %.4f\n", dump);
+    printf("Time of fastMM2 function call: %.4f sec.\n", time_spent0);
 
 //    f64MatPrint( c, "c" );
 
@@ -313,7 +396,7 @@ int main(int argn, const char ** argv) {
     dump = 0;
     begin0 = clock();
 
-    fastMM2( a, b, d );
+    fastMM4( a, b, d );
 
     dump = d.data[0];
 
@@ -321,10 +404,12 @@ int main(int argn, const char ** argv) {
     time_spent0 = (double)(end0 - begin0) / CLOCKS_PER_SEC;
 
     printf("dump = %.4f\n", dump);
-    printf("Time of fastMM2 function call: %.4f sec.\n", time_spent0);
+    printf("Time of fastMM4 function call: %.4f sec.\n", time_spent0);
 
 //    f64MatPrint( d, "d" );
 
+    
+    printf("c == d : %d\n", f64MatEqual( c, d, 1E-10 ) );
     
 //    // three
 //    memset( c.data, 0, c.dim0 * c.dim1 * sizeof(f64) );
