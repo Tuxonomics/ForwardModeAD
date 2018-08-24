@@ -13,7 +13,7 @@
 
 //#include <x86intrin.h>
 
-//#include "build-cblas/blas/CBLAS/include/cblas.h"
+#include "build-cblas/blas/CBLAS/include/cblas.h"
 
 
 
@@ -112,31 +112,55 @@ void fastMM2( f64Mat a, f64Mat b, f64Mat c )
     f64 *ra  = a.data;
     f64 *rb  = b.data;
     f64 *rc  = c.data;
-    f64 *rc2 = c.data;
+//    f64 *rc2 = c.data;
+
+//    for ( i = 0; i < n; ++i ) {
+//        for ( k = 0; k < m; ++k ) {
+//
+//            tmpA = (ra++)[0];
+//            // tmpA = A(i, k);
+//
+//            rc = rc2;
+//
+//            for ( j = 0; j < p; ++j ) {
+//
+//                rc[0] = f64Add( rc[0], f64Mul( tmpA, (rb++)[0] ) );
+//
+//                rc++;
+//                // C(i, j) += tmpA * B(k, j);
+//
+//            }
+//
+//
+//        }
+//
+//        rc2 = rc;
+//        rb = b.data;
+//    }
 
     for ( i = 0; i < n; ++i ) {
         for ( k = 0; k < m; ++k ) {
-            
-            tmpA = (ra++)[0];
-            // tmpA = A(i, k);
 
-            rc = rc2;
-            
+            //            tmpA = ra[k];
+
+
             for ( j = 0; j < p; ++j ) {
 
-                rc[0] = f64Add( rc[0], f64Mul( tmpA, (rb++)[0] ) );
+                rc[j] = f64Add( rc[j], f64Mul( ra[k], rb[j] ) );
 
-                rc++;
-                // C(i, j) += tmpA * B(k, j);
-                
+//                rc[j] += ra[k] * rb[j];
+                //                rc[j] += tmpA * rb[j];
+
             }
 
-
+            rb += p;
         }
-        
-        rc2 = rc;
-        rb = b.data;
+
+        ra += k;
+        rc += p;
+        rb -= m*p;
     }
+
 }
 
 
@@ -234,6 +258,68 @@ void fastMM4( f64Mat a, f64Mat b, f64Mat c )
         rc2 = rc;
         rb = b.data;
     }
+}
+
+
+Inline
+void microKernel( f64 * ra, f64 * rb, f64 * rc )
+
+//Inline
+//void microKernel( f64 *restrict ra, f64 *restrict rb, f64 *restrict rc )
+{
+    rc[0] += ra[0] * rb[0];
+    rc[1] += ra[0] * rb[1];
+    rc[2] += ra[0] * rb[2];
+    rc[3] += ra[0] * rb[3];
+}
+
+
+Inline
+void macroKernel( f64 * ra, f64 * rb, f64 * rc, u32 n, u32 m, u32 p )
+//Inline
+//void macroKernel( f64 *restrict ra, f64 *restrict rb, f64 *restrict rc, u32 n, u32 m, u32 p )
+{
+
+    u32 i, j, k;
+
+//    f64 tmpA;
+
+    for ( i = 0; i < n; ++i ) {
+        for ( k = 0; k < m; ++k ) {
+
+//            tmpA = ra[k];
+
+
+            for ( j = 0; j < p; j += 4 ) {
+
+                microKernel( ra+k, rb+j, rc+j );
+
+//                rc[j] += ra[k] * rb[j];
+//                rc[j] += tmpA * rb[j];
+
+            }
+
+            rb += p;
+        }
+
+        ra += k;
+        rc += p;
+        rb -= m*p;
+    }
+
+}
+
+
+void fastMM5( f64Mat a, f64Mat b, f64Mat c )
+{
+    ASSERT(a.dim0 == c.dim0 && a.dim1 == b.dim0 && b.dim1 == c.dim1);
+
+    // A is n x m
+    // B is m x p
+    // C is n x p
+
+    macroKernel( a.data, b.data, c.data, a.dim0, a.dim1, b.dim1 );
+
 }
 
 
@@ -338,7 +424,7 @@ int main(int argn, const char ** argv) {
 
 
 
-    u32 S = 8;
+    u32 S = 4000;
     u32 S2 = S;
 
     f64Mat a = f64MatMake( DefaultAllocator, S, S2 );
@@ -396,7 +482,7 @@ int main(int argn, const char ** argv) {
     dump = 0;
     begin0 = clock();
 
-    fastMM4( a, b, d );
+    fastMM5( a, b, d );
 
     dump = d.data[0];
 
@@ -404,34 +490,34 @@ int main(int argn, const char ** argv) {
     time_spent0 = (double)(end0 - begin0) / CLOCKS_PER_SEC;
 
     printf("dump = %.4f\n", dump);
-    printf("Time of fastMM4 function call: %.4f sec.\n", time_spent0);
+    printf("Time of fastMM5 function call: %.4f sec.\n", time_spent0);
 
 //    f64MatPrint( d, "d" );
 
     
     printf("c == d : %d\n", f64MatEqual( c, d, 1E-10 ) );
     
-//    // three
-//    memset( c.data, 0, c.dim0 * c.dim1 * sizeof(f64) );
-//
-//    dump = 0;
-//    begin0 = clock();
-//
-//    cblas_dgemm(
-//        CblasRowMajor, CblasNoTrans, CblasNoTrans,
-//        a.dim0, b.dim1, a.dim1, 1.0,
-//        a.data, a.dim1, b.data, b.dim0,
-//        0.0, c.data, b.dim1
-//    );
-//
-//    dump = c.data[0];
-//
-//    end0 = clock();
-//    time_spent0 = (double)(end0 - begin0) / CLOCKS_PER_SEC;
-//
-//    printf("dump = %.4f\n", dump);
-//    printf("Time of cblas_dgemm function call: %.4f sec.\n", time_spent0);
-    
+    // three
+    memset( c.data, 0, c.dim0 * c.dim1 * sizeof(f64) );
+
+    dump = 0;
+    begin0 = clock();
+
+    cblas_dgemm(
+        CblasRowMajor, CblasNoTrans, CblasNoTrans,
+        a.dim0, b.dim1, a.dim1, 1.0,
+        a.data, a.dim1, b.data, b.dim0,
+        0.0, c.data, b.dim1
+    );
+
+    dump = c.data[0];
+
+    end0 = clock();
+    time_spent0 = (double)(end0 - begin0) / CLOCKS_PER_SEC;
+
+    printf("dump = %.4f\n", dump);
+    printf("Time of cblas_dgemm function call: %.4f sec.\n", time_spent0);
+
     
 //    // four
 //    memset( c.data, 0, c.dim0 * c.dim1 * sizeof(f64) );
