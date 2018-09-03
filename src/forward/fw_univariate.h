@@ -1,3 +1,5 @@
+#include "fw_matrix.h"
+
 #ifndef FVAR_DECL
 
 #define FVAR_DECL(type) typedef struct type##FVar type##FVar; \
@@ -319,28 +321,30 @@ FVAR_NEG(f64, f64Neg);
 #if TEST
 void test_fvar_basic_functions()
 {
+#define EPS 1E-10
+    
     f64FVar a = f64FVMake( 1.1, 1.0 );
     f64FVar b = f64FVConst( 2.0 );
     f64FVar c = a;
 
-    TEST_ASSERT( f64FVEqual( a, c, 1E-10 ) );
-    TEST_ASSERT( ! f64FVEqual( a, b, 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( a, c, EPS ) );
+    TEST_ASSERT( ! f64FVEqual( a, b, EPS ) );
 
-    TEST_ASSERT( f64FVEqual( f64FVAdd( a, b ), f64FVAdd( b, a ), 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( f64FVAdd( a, b ), f64FVAdd( b, a ), EPS ) );
 
-    TEST_ASSERT( f64FVEqual( f64FVAddf64( a, 5 ), f64FVf64Add( 5, a ), 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( f64FVAddf64( a, 5 ), f64FVf64Add( 5, a ), EPS ) );
 
-    TEST_ASSERT( f64FVEqual( f64FVSub( a, b ), f64FVNeg( f64FVSub( b, a ) ), 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( f64FVSub( a, b ), f64FVNeg( f64FVSub( b, a ) ), EPS ) );
 
-    TEST_ASSERT( f64FVEqual( f64FVMul( a, b ), f64FVMul( b, a ), 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( f64FVMul( a, b ), f64FVMul( b, a ), EPS ) );
 
-    TEST_ASSERT( f64FVEqual( f64FVMulf64( a, 5 ), f64FVf64Mul( 5, a ), 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( f64FVMulf64( a, 5 ), f64FVf64Mul( 5, a ), EPS ) );
 
-    TEST_ASSERT( f64FVEqual( f64FVDiv( a, b ), f64FVMake( 0.55, 0.5 ), 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( f64FVDiv( a, b ), f64FVMake( 0.55, 0.5 ), EPS ) );
 
-    TEST_ASSERT( f64FVEqual( f64FVDivf64( a, 2 ), f64FVMake( 0.55, 0.5 ), 1E-10 ) );
+    TEST_ASSERT( f64FVEqual( f64FVDivf64( a, 2 ), f64FVMake( 0.55, 0.5 ), EPS ) );
 
-
+#undef EPS
 }
 #endif
 
@@ -363,7 +367,7 @@ FVAR_ATANH(f64, f64Const, f64Sub, f64Div, f64Mul, atanh);
 #if TEST
 void test_fv_elementary_functions()
 {
-#define P 1E-10
+#define EPS 1E-10
     
     f64FVar a = f64FVMake( 2.0, 1.0 );
     f64FVar b = f64FVMake( 0.5, 1.0 );
@@ -373,7 +377,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVSqrt(a),
             f64FVMake( sqrt(a.val), 1 / (2 * sqrt(a.val)) ),
-            P
+            EPS
         )
     );
     
@@ -381,7 +385,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVPow( a, 2 ),
             f64FVMake( pow(a.val, 2.0), 2 * a.val ),
-            P
+            EPS
         )
     );
 
@@ -389,7 +393,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVSin( a ),
             f64FVMake( sin(a.val), cos(a.val) ),
-            P
+            EPS
         )
     );
 
@@ -397,7 +401,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVCos( a ),
             f64FVMake( cos(a.val), -sin(a.val) ),
-            P
+            EPS
         )
     );
 
@@ -405,7 +409,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVTan( a ),
             f64FVDiv( f64FVSin(a), f64FVCos(a) ),
-            P
+            EPS
         )
     );
 
@@ -413,7 +417,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVAtan( a ),
             f64FVMake( atan(a.val), 1 / ( 1 + (a.val * a.val) ) ),
-            P
+            EPS
         )
     );
 
@@ -421,7 +425,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVExp( a ),
             f64FVMake( exp(a.val), exp(a.val) ),
-            P
+            EPS
         )
     );
 
@@ -429,7 +433,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVLog( a ),
             f64FVMake( log(a.val), 1 / a.val ),
-            P
+            EPS
         )
     );
 
@@ -437,7 +441,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVLogAbs( f64FVNeg(a) ),
             f64FVMake( log( a.val ), 1 / a.val ),
-            P
+            EPS
         )
     );
 
@@ -445,7 +449,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVSinh( a ),
             f64FVMake( sinh( a.val ), cosh( a.val ) ),
-            P
+            EPS
         )
     );
 
@@ -453,7 +457,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVCosh( a ),
             f64FVMake( cosh( a.val ), sinh( a.val ) ),
-            P
+            EPS
         )
     );
 
@@ -461,7 +465,7 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVTanh( a ),
             f64FVMake( tanh( a.val ), 1 - tanh( a.val ) * tanh( a.val ) ),
-            P
+            EPS
         )
     );
 
@@ -469,13 +473,13 @@ void test_fv_elementary_functions()
         f64FVEqual(
             f64FVAtanh( b ),
             f64FVMake( atanh( b.val ), 1.0 / ( 1.0 - (b.val * b.val) ) ),
-            P
+            EPS
         )
     );
 
     
     
-#undef P
+#undef EPS
 }
 #endif
 

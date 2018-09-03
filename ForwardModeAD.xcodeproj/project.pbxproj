@@ -23,7 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		DD46670020BC865B00EFAEB7 /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
+		DD46670020BC865B00EFAEB7 /* fw_matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_matrix.h; sourceTree = "<group>"; };
 		DDB509632107CF4100CCDC1F /* rng.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rng.h; sourceTree = "<group>"; };
 		DDD2658520B93D4000272509 /* ForwardModeAD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ForwardModeAD; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD2658820B93D4000272509 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
@@ -31,6 +31,7 @@
 		DDD2659020B9846B00272509 /* utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		DDD2659220BA097C00272509 /* optim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optim.h; sourceTree = "<group>"; };
 		DDD2659320BABF0300272509 /* grad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grad.h; sourceTree = "<group>"; };
+		DDEDC3DB213348EC000FF4B6 /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,13 +66,46 @@
 			children = (
 				DDD2658820B93D4000272509 /* main.c */,
 				DDD2659020B9846B00272509 /* utilities.h */,
-				DDD2658F20B93DA100272509 /* fw_univariate.h */,
-				DD46670020BC865B00EFAEB7 /* matrix.h */,
+				DDEDC3DB213348EC000FF4B6 /* matrix.h */,
 				DDB509632107CF4100CCDC1F /* rng.h */,
-				DDD2659220BA097C00272509 /* optim.h */,
-				DDD2659320BABF0300272509 /* grad.h */,
+				DDEDC3DD21334FF3000FF4B6 /* optimization */,
+				DDEDC3DA21334858000FF4B6 /* forward */,
+				DDEDC3DC21334908000FF4B6 /* reverse */,
+				DDEDC3DE2133500E000FF4B6 /* dependencies */,
 			);
 			path = src;
+			sourceTree = "<group>";
+		};
+		DDEDC3DA21334858000FF4B6 /* forward */ = {
+			isa = PBXGroup;
+			children = (
+				DD46670020BC865B00EFAEB7 /* fw_matrix.h */,
+				DDD2658F20B93DA100272509 /* fw_univariate.h */,
+				DDD2659320BABF0300272509 /* grad.h */,
+			);
+			path = forward;
+			sourceTree = "<group>";
+		};
+		DDEDC3DC21334908000FF4B6 /* reverse */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = reverse;
+			sourceTree = "<group>";
+		};
+		DDEDC3DD21334FF3000FF4B6 /* optimization */ = {
+			isa = PBXGroup;
+			children = (
+				DDD2659220BA097C00272509 /* optim.h */,
+			);
+			path = optimization;
+			sourceTree = "<group>";
+		};
+		DDEDC3DE2133500E000FF4B6 /* dependencies */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = dependencies;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

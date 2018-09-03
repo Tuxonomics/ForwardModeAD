@@ -107,7 +107,7 @@ f64FVar test_f( f64FVarMat input )
 #if TEST
 void test_grad()
 {
-#define P 1E-8
+#define EPS 1E-8
 
     u32 N = 2;
 
@@ -119,24 +119,23 @@ void test_grad()
     input.data[0] = 0.5;
     input.data[1] = 0.0;
 
-    f64FVarFDiff( DefaultAllocator, test_f, input, gradF, P );
+    f64FVarFDiff( DefaultAllocator, test_f, input, gradF, EPS );
 
-    f64FVarCDiff( DefaultAllocator, test_f, input, gradC, P );
+    f64FVarCDiff( DefaultAllocator, test_f, input, gradC, EPS );
 
     f64FVarGradient( DefaultAllocator, test_f, input, gradAD );
 
 
-    TEST_ASSERT( f64MatEqual( gradF, gradC,  P ) );
-    TEST_ASSERT( f64MatEqual( gradC, gradAD, P ) );
+    TEST_ASSERT( f64MatEqual( gradF, gradC,  EPS ) );
+    TEST_ASSERT( f64MatEqual( gradC, gradAD, EPS ) );
 
-//    f64MatPrint( gradAD,  "gradAD" );
 
     f64MatFree( DefaultAllocator, &input );
     f64MatFree( DefaultAllocator, &gradC );
     f64MatFree( DefaultAllocator, &gradF );
     f64MatFree( DefaultAllocator, &gradAD );
 
-#undef P
+#undef EPS
 }
 #endif
 
@@ -255,7 +254,7 @@ f64FVarFVar test_f2( f64FVarFVarMat input )
 #if TEST
 void test_hessian()
 {
-#define P 1E-5
+#define EPS 1E-5
 
     u32 N = 2;
 
@@ -270,10 +269,10 @@ void test_hessian()
 
     f64FVarHessian( DefaultAllocator, test_f2, input, grad, hess );
 
-    f64FVarNumHess( DefaultAllocator, test_f2, input, num, P );
+    f64FVarNumHess( DefaultAllocator, test_f2, input, num, EPS );
 
 
-    TEST_ASSERT( f64MatEqual( hess, num, P ) );
+    TEST_ASSERT( f64MatEqual( hess, num, EPS ) );
 
 
     f64MatFree( DefaultAllocator, &input );
