@@ -23,15 +23,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DD046E83213D8ECD002A507D /* rng.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rng.h; sourceTree = "<group>"; };
+		DD046E84213D8ECD002A507D /* matrices.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrices.h; sourceTree = "<group>"; };
+		DD046E85213D8ECD002A507D /* utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
+		DD046E87213D8FC0002A507D /* fw_dod.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_dod.h; sourceTree = "<group>"; };
+		DD046E88213D8FCF002A507D /* fw_dod_grad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_dod_grad.h; sourceTree = "<group>"; };
 		DD46670020BC865B00EFAEB7 /* fw_matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_matrix.h; sourceTree = "<group>"; };
-		DDB509632107CF4100CCDC1F /* rng.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rng.h; sourceTree = "<group>"; };
 		DDD2658520B93D4000272509 /* ForwardModeAD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = ForwardModeAD; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDD2658820B93D4000272509 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		DDD2658F20B93DA100272509 /* fw_univariate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fw_univariate.h; sourceTree = "<group>"; };
-		DDD2659020B9846B00272509 /* utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		DDD2659220BA097C00272509 /* optim.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = optim.h; sourceTree = "<group>"; };
 		DDD2659320BABF0300272509 /* grad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grad.h; sourceTree = "<group>"; };
-		DDEDC3DB213348EC000FF4B6 /* matrix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +47,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DD046E86213D8EE4002A507D /* forward_dod */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = forward_dod;
+			sourceTree = "<group>";
+		};
 		DDD2657C20B93D4000272509 = {
 			isa = PBXGroup;
 			children = (
@@ -65,25 +74,25 @@
 			isa = PBXGroup;
 			children = (
 				DDD2658820B93D4000272509 /* main.c */,
-				DDD2659020B9846B00272509 /* utilities.h */,
-				DDEDC3DB213348EC000FF4B6 /* matrix.h */,
-				DDB509632107CF4100CCDC1F /* rng.h */,
+				DD046E87213D8FC0002A507D /* fw_dod.h */,
+				DD046E88213D8FCF002A507D /* fw_dod_grad.h */,
 				DDEDC3DD21334FF3000FF4B6 /* optimization */,
-				DDEDC3DA21334858000FF4B6 /* forward */,
+				DD046E86213D8EE4002A507D /* forward_dod */,
+				DDEDC3DA21334858000FF4B6 /* forward_normal */,
 				DDEDC3DC21334908000FF4B6 /* reverse */,
 				DDEDC3DE2133500E000FF4B6 /* dependencies */,
 			);
 			path = src;
 			sourceTree = "<group>";
 		};
-		DDEDC3DA21334858000FF4B6 /* forward */ = {
+		DDEDC3DA21334858000FF4B6 /* forward_normal */ = {
 			isa = PBXGroup;
 			children = (
 				DD46670020BC865B00EFAEB7 /* fw_matrix.h */,
 				DDD2658F20B93DA100272509 /* fw_univariate.h */,
 				DDD2659320BABF0300272509 /* grad.h */,
 			);
-			path = forward;
+			path = forward_normal;
 			sourceTree = "<group>";
 		};
 		DDEDC3DC21334908000FF4B6 /* reverse */ = {
@@ -104,6 +113,9 @@
 		DDEDC3DE2133500E000FF4B6 /* dependencies */ = {
 			isa = PBXGroup;
 			children = (
+				DD046E84213D8ECD002A507D /* matrices.h */,
+				DD046E83213D8ECD002A507D /* rng.h */,
+				DD046E85213D8ECD002A507D /* utilities.h */,
 			);
 			path = dependencies;
 			sourceTree = "<group>";
@@ -304,6 +316,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				HEADER_SEARCH_PATHS = /opt/intel/compilers_and_libraries_2018.3.185/mac/mkl/include;
+				OTHER_LDFLAGS = (
+					"-ldl",
+					"-ldl",
+					"-lpthread",
+					/opt/intel/compilers_and_libraries_2018.3.185/mac/compiler/lib/libiomp5.a,
+					/opt/intel/mkl/lib/libmkl_core.a,
+					/opt/intel/mkl/lib/libmkl_intel_thread.a,
+					/opt/intel/mkl/lib/libmkl_intel_lp64.a,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
@@ -316,6 +338,16 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				HEADER_SEARCH_PATHS = /opt/intel/compilers_and_libraries_2018.3.185/mac/mkl/include;
+				OTHER_LDFLAGS = (
+					"-ldl",
+					"-ldl",
+					"-lpthread",
+					/opt/intel/compilers_and_libraries_2018.3.185/mac/compiler/lib/libiomp5.a,
+					/opt/intel/mkl/lib/libmkl_core.a,
+					/opt/intel/mkl/lib/libmkl_intel_thread.a,
+					/opt/intel/mkl/lib/libmkl_intel_lp64.a,
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 			};

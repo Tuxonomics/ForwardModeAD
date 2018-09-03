@@ -1,6 +1,5 @@
-#include "utilities.h"
-#include "forward/grad.h"
-//#include "optim.h"
+#include "fw_dod.h"
+
 
 
 
@@ -8,42 +7,31 @@
 #ifndef TEST
 int main(int argc, const char * argv[]) {
 
-
-//    f64FVarFVar a = f64FVarFVMake(
-//        f64FVMake( 0.5, 1.0 ),
-//        f64FVMake( 1.0, 0.0)
-//    );
-//
-//    f64FVarFVPrint( a, "a" );
-//
-//    f64FVarFVar b = f64FVarFVSin( a );
-//
-//    f64FVarFVPrint( b, "b" );
-//
-//    f64FVarFVar c = f64FVarFVCos( a );
-//
-//    f64FVarFVPrint( c, "c" );
-
-
-    f64FVarFVar a = f64FVarFVMake(
-        f64FVMake( 0.5, 0.0 ),
-        f64FVMake( 0.0, 0.0)
-    );
-
-    f64FVarFVar b = f64FVarFVMake(
-        f64FVMake( 0.0, 1.0 ),
-        f64FVMake( 1.0, 0.0)
-    );
-
-    f64FVarFVarMat m = f64FVarFVarMatMake( DefaultAllocator, 2, 1 );
-    m.data[0] = a;
-    m.data[1] = b;
-
-    f64FVarFVarMatPrint( m, "m" );
-
-    f64FVarFVar c = test_f2( m );
-
-    f64FVarFVPrint( c, "c" );
+    u32 N = 2;
+    
+    f64FVar fv1 = f64FVMake( DefaultAllocator, N, N );
+    f64FVar fv2 = f64FVMake( DefaultAllocator, N, N );
+    f64FVar fv3 = f64FVMake( DefaultAllocator, N, N );
+    
+    
+    for ( u32 i=0; i<N; ++i ) {
+        for ( u32 j=0; j<N; ++j ) {
+            f64FVSetElement( fv1, i, j, (f64) (i+0.5) / (j+1), 0.0 );
+            f64FVSetElement( fv2, i, j, (f64) (j+0.5) / (i+1), 0.0 );
+        }
+    }
+    
+    f64FVPrint( fv1, "fv1" );
+    f64FVPrint( fv2, "fv2" );
+    
+    f64FVMatMul( fv1, fv2, fv3 );
+    
+    f64FVPrint( fv3, "fv3" );
+//    printf("%.4f\n", fv3.val.data[0]);
+    
+    f64FVFree( DefaultAllocator, &fv1 );
+    f64FVFree( DefaultAllocator, &fv2 );
+    f64FVFree( DefaultAllocator, &fv3 );
 
     return 0;
 }

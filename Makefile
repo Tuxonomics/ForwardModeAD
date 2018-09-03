@@ -3,7 +3,12 @@ CC = clang
 debug:   CFLAGS = -g -O0 -DDEBUG
 release: CFLAGS = -O3 -march=native
 
-LFLAGS =
+PATH1 = /opt/intel/compilers_and_libraries_2018.3.185/mac/mkl
+PATH2 = /opt/intel/compilers_and_libraries_2018.3.185/mac/compiler/lib
+
+CFLAGS += -I$(PATH1)/include
+LFLAGS =  $(PATH1)/lib/libmkl_intel_lp64.a $(PATH1)/lib/libmkl_intel_thread.a
+LFLAGS += $(PATH1)/lib/libmkl_core.a $(PATH2)/libiomp5.a -lpthread -lm #-ld
 DISABLED_WARNINGS = -Wno-writable-strings -Wno-switch
 
 TARGET = main
