@@ -1,4 +1,4 @@
-#include "fw_dod.h"
+#include "fw_dod_grad.h"
 
 
 
@@ -7,7 +7,9 @@
 #ifndef TEST
 int main(int argc, const char * argv[]) {
 
-    u32 N = 2;
+    InitializeFV( 4, 'l' );
+    
+    u32 N = 4000;
     
     f64FVar fv1 = f64FVMake( DefaultAllocator, N, N );
     f64FVar fv2 = f64FVMake( DefaultAllocator, N, N );
@@ -21,17 +23,16 @@ int main(int argc, const char * argv[]) {
         }
     }
     
-    f64FVPrint( fv1, "fv1" );
-    f64FVPrint( fv2, "fv2" );
     
     f64FVMatMul( fv1, fv2, fv3 );
+
+    printf("%.4f\n", fv3.val.data[0]);
     
-    f64FVPrint( fv3, "fv3" );
-//    printf("%.4f\n", fv3.val.data[0]);
+//    f64FVPrint( fv3, "fv3" );
     
-    f64FVFree( DefaultAllocator, &fv1 );
-    f64FVFree( DefaultAllocator, &fv2 );
-    f64FVFree( DefaultAllocator, &fv3 );
+//    f64FVFree( DefaultAllocator, &fv1 );
+//    f64FVFree( DefaultAllocator, &fv2 );
+//    f64FVFree( DefaultAllocator, &fv3 );
 
     return 0;
 }

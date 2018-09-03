@@ -338,6 +338,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				HEADER_SEARCH_PATHS = /opt/intel/compilers_and_libraries_2018.3.185/mac/mkl/include;
 				OTHER_LDFLAGS = (
 					"-ldl",
