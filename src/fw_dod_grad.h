@@ -1,3 +1,7 @@
+// Author:  https://github.com/Tuxonomics
+// Created: Aug, 2018
+//
+
 #include "fw_dod.h"
 
 ///* Finite Difference */

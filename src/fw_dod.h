@@ -1,3 +1,7 @@
+// Author:  https://github.com/Tuxonomics
+// Created: Aug, 2018
+//
+
 #include "dependencies/utilities.h"
 
 static Arena     FVScratchArena;
